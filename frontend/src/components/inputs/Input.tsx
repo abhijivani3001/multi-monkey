@@ -23,7 +23,7 @@ const Input: React.FC<InputProps> = ({
     <div>
       <label
         htmlFor={id}
-        className='block mb-2 text-sm font-medium text-gray-100'
+        className='block mb-2 text-sm font-medium text-slate-100'
       >
         {label}
       </label>
@@ -34,8 +34,8 @@ const Input: React.FC<InputProps> = ({
         placeholder={placeholder}
         required={required}
         className={clsx(
-          `border sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-4 py-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-gray-100 focus:ring-0 focus:outline-none`,
-          disabled && 'bg-gray-100 opacity-50 cursor-not-allowed'
+          `border sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-4 py-2.5 bg-slate-700 border-slate-600 placeholder-slate-400 text-slate-100 focus:ring-0 focus:outline-none`,
+          disabled && 'bg-slate-100 opacity-50 cursor-not-allowed'
         )}
         onChange={onChange}
       />

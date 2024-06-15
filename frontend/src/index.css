@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -71,7 +73,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-gray-800 text-gray-100;
+    @apply bg-slate-800 text-slate-100;
   }
 }
 
@@ -88,6 +90,6 @@
     @apply px-4 py-2 rounded-md font-medium bg-blue-600 text-white transition hover:bg-opacity-80 focus:outline-none focus:ring-0;
   }
   .error-msg {
-    @apply text-gray-300 h-[80vh] text-xl flex items-center justify-center;
+    @apply text-slate-300 h-[80vh] text-xl flex items-center justify-center;
   }
 }

@@ -39,7 +39,7 @@ const AuthForm = () => {
   return (
     <>
       <div className='flex flex-col items-center justify-center px-6 py-8 mx-auto md:my-10 my-4 lg:py-0'>
-        <div className='flex items-center mb-6 text-2xl font-semibold text-gray-100'>
+        <div className='flex items-center mb-6 text-2xl font-semibold text-slate-100'>
           <img
             className='w-10 h-10 mr-2'
             src='/logos/logo-base-1200x1200.png'
@@ -48,9 +48,9 @@ const AuthForm = () => {
           {variant === 'LOGIN' && <span>Login</span>}
           {variant === 'REGISTER' && <span>Register</span>}
         </div>
-        <div className='w-full rounded-lg shadow-xl border md:mt-0 sm:max-w-lg xl:p-0 bg-gray-900 border-gray-700'>
+        <div className='w-full rounded-lg shadow-xl border md:mt-0 sm:max-w-lg xl:p-0 bg-slate-900 border-slate-700'>
           <div className='p-6 space-y-4 md:space-y-6 sm:p-8'>
-            <h1 className='text-xl font-bold leading-tight tracking-tight md:text-2xl text-gray-100'>
+            <h1 className='text-xl font-bold leading-tight tracking-tight md:text-2xl text-slate-100'>
               {variant === 'LOGIN' && <span>Sign in to your account</span>}
               {variant === 'REGISTER' && <span>Create your account</span>}
             </h1>
@@ -116,18 +116,18 @@ const AuthForm = () => {
                         id='remember'
                         aria-describedby='remember'
                         type='checkbox'
-                        className='w-4 h-4 border rounded focus:ring-1 border-gray-600 focus:outline-none focus:border'
+                        className='w-4 h-4 border rounded focus:ring-1 border-slate-600 focus:outline-none focus:border'
                       />
                     </div>
                     <div className='ml-3 text-sm'>
-                      <label htmlFor='remember' className='text-gray-300'>
+                      <label htmlFor='remember' className='text-slate-300'>
                         Remember me
                       </label>
                     </div>
                   </div>
                   <a
                     href='#'
-                    className='text-sm font-medium text-gray-300 hover:underline text-primary-500'
+                    className='text-sm font-medium text-slate-300 hover:underline text-primary-500'
                   >
                     Forgot password?
                   </a>
@@ -148,10 +148,10 @@ const AuthForm = () => {
               <div className='mt-6'>
                 <div className='relative'>
                   <div className='absolute inset-0 flex items-center'>
-                    <div className='w-full border-t border-gray-700' />
+                    <div className='w-full border-t border-slate-700' />
                   </div>
                   <div className='relative flex justify-center text-sm'>
-                    <span className='bg-gray-900 px-2 text-gray-500'>
+                    <span className='bg-slate-900 px-2 text-slate-500'>
                       Or continue with
                     </span>
                   </div>
@@ -164,7 +164,7 @@ const AuthForm = () => {
               </div>
 
               {/* change variant */}
-              <p className='text-sm font-light text-gray-400'>
+              <p className='text-sm font-light text-slate-400'>
                 <span className='mr-1.5'>
                   {variant === 'REGISTER'
                     ? 'Already have an account?'
