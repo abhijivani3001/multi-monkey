@@ -18,7 +18,7 @@ const Home = () => {
     setRawWords(arr);
 
     const ans = arr.map((word, index) => (
-      <span key={index} className='word'>
+      <span key={index}>
         {word.split('').map((letter, letterIndex) => (
           <span key={letterIndex}>{letter}</span>
         ))}{' '}
@@ -35,6 +35,7 @@ const Home = () => {
 
       const key = e.key;
 
+      // space event
       if (key === ' ') {
         setCurrIdx((prevIdx) => {
           const newIdx = prevIdx + 1;
@@ -44,50 +45,33 @@ const Home = () => {
         return;
       }
 
-      // setCurrPos((prevPos) => {
-      //   const newPos = prevPos + 1;
-      //   const ans = rawWords.map((word, index) => (
-      //     <span key={index} className='word'>
-      //       {word.split('').map((letter, letterIndex) => (
-      //         <span
-      //           key={letterIndex}
-      //           className={`${
-      //             index === currIdx && prevPos === letterIndex
-      //               ? letter === key
-      //                 ? 'text-white'
-      //                 : 'text-rose-400'
-      //               : ''
-      //           }`}
-      //         >
-      //           {letter}
-      //         </span>
-      //       ))}{' '}
-      //     </span>
-      //   ));
+      // backspace event
+      if (key === 'Backspace') {
+        return;
+      }
 
-      //   setWords(ans);
-
-      //   return newPos;
-      // });
-
+      // update character
       setWords((prevWords) => {
         return prevWords.map((wordElement, index) => {
           if (currIdx !== index) {
             return wordElement;
           }
 
+          const currWord = wordElement.props.children[0];
+
           const updatedWord = rawWords[index]
             .split('')
             .map((letter, letterIndex) => {
+              if (currPos !== letterIndex) {
+                // return <span key={letterIndex}>{letter}</span>;
+                return currWord[letterIndex];
+              }
+
               return (
                 <span
                   key={letterIndex}
                   className={`${
-                    currPos === letterIndex
-                      ? letter === key
-                        ? 'text-white'
-                        : 'text-red-400'
-                      : ''
+                    letter === key ? 'text-white' : 'text-red-400'
                   }`}
                 >
                   {letter}
