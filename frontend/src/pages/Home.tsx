@@ -1,55 +1,123 @@
 import { generate } from 'random-words';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const Home = () => {
-  const [words, setWords] = useState<string[]>([]);
-  const [inputValue, setInputValue] = useState<string>('');
-  const [started, setStarted] = useState<boolean>(false);
-  const [finished, setFinished] = useState<boolean>(false);
-  const [startTime, setStartTime] = useState<number>(0);
-  const [endTime, setEndTime] = useState<number>(0);
-  const [typedWords, setTypedWords] = useState<number>(0);
+  const [words, setWords] = useState<JSX.Element[]>([]);
+  const [currIdx, setCurrIdx] = useState(0); // number of word
+  const [currPos, setCurrPos] = useState(0); // number of char in word
+  const [rawWords, setRawWords] = useState<string[]>([]);
 
-  // Generate words on initial mount
   useEffect(() => {
     generateWords();
   }, []);
 
-  // Function to generate 1000 random words
   const generateWords = () => {
-    let arr = generate(1000);
+    let arr = generate(100);
     if (typeof arr === 'string') arr = arr.split(' ');
-    setWords(arr);
+
+    setRawWords(arr);
+
+    const ans = arr.map((word, index) => (
+      <span key={index} className='word'>
+        {word.split('').map((letter, letterIndex) => (
+          <span key={letterIndex}>{letter}</span>
+        ))}{' '}
+      </span>
+    ));
+    setWords(ans);
   };
 
-  // Event handler for typing in the input field
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setInputValue(value);
-  };
+  const handleKeyPress = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.altKey || e.ctrlKey || e.shiftKey) {
+        return;
+      }
 
-  // Reset the typing race
-  const resetRace = () => {
-    setWords([]);
-    setInputValue('');
-    setStarted(false);
-    setFinished(false);
-    setStartTime(0);
-    setEndTime(0);
-    setTypedWords(0);
-    generateWords();
-  };
+      const key = e.key;
 
-  const focusTextArea = () => {};
+      if (key === ' ') {
+        setCurrIdx((prevIdx) => {
+          const newIdx = prevIdx + 1;
+          setCurrPos(0); // Reset current character position to start of the next word
+          return newIdx;
+        });
+        return;
+      }
+
+      // setCurrPos((prevPos) => {
+      //   const newPos = prevPos + 1;
+      //   const ans = rawWords.map((word, index) => (
+      //     <span key={index} className='word'>
+      //       {word.split('').map((letter, letterIndex) => (
+      //         <span
+      //           key={letterIndex}
+      //           className={`${
+      //             index === currIdx && prevPos === letterIndex
+      //               ? letter === key
+      //                 ? 'text-white'
+      //                 : 'text-rose-400'
+      //               : ''
+      //           }`}
+      //         >
+      //           {letter}
+      //         </span>
+      //       ))}{' '}
+      //     </span>
+      //   ));
+
+      //   setWords(ans);
+
+      //   return newPos;
+      // });
+
+      setWords((prevWords) => {
+        return prevWords.map((wordElement, index) => {
+          if (currIdx !== index) {
+            return wordElement;
+          }
+
+          const updatedWord = rawWords[index]
+            .split('')
+            .map((letter, letterIndex) => {
+              return (
+                <span
+                  key={letterIndex}
+                  className={`${
+                    currPos === letterIndex
+                      ? letter === key
+                        ? 'text-white'
+                        : 'text-red-400'
+                      : ''
+                  }`}
+                >
+                  {letter}
+                </span>
+              );
+            });
+
+          return <span key={index}>{updatedWord} </span>;
+        });
+      });
+
+      setCurrPos((prevPos) => prevPos + 1);
+    },
+    [currIdx, currPos, rawWords]
+  );
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyPress);
+
+    return () => document.removeEventListener('keydown', handleKeyPress);
+  }, [handleKeyPress]);
 
   return (
     <div>
-      <div className='flex flex-col justify-center items-center flex-1 h-[80vh]'>
-        <div
-          onClick={focusTextArea}
-          className='line-clamp-3 font-roboto bg-slate-800 text-slate-500 w-[80vw] text-4xl leading-snug'
-        >
-          {words.map((word) => word + ' ')}
+      {currIdx}
+      <div></div>
+      {currPos}
+      <div className='flex justify-center items-center flex-1 h-[80vh]'>
+        <div className='line-clamp-3 font-roboto relative bg-slate-800 text-slate-500 w-[90vw] md:w-[85vw] text-4xl leading-snug'>
+          <div>{words}</div>
         </div>
       </div>
     </div>
