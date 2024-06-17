@@ -1,5 +1,5 @@
 import { generate } from 'random-words';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 const Home = () => {
   const [words, setWords] = useState<JSX.Element[]>([]);
@@ -11,6 +11,14 @@ const Home = () => {
     generateWords();
   }, []);
 
+  const updateClassName = (className: string, newBorderClass: string) => {
+    return className
+      .split(' ')
+      .filter((cls: string) => !cls.startsWith('border-'))
+      .concat(newBorderClass)
+      .join(' ');
+  };
+
   const generateWords = () => {
     let arr = generate(100);
     if (typeof arr === 'string') arr = arr.split(' ');
@@ -20,7 +28,16 @@ const Home = () => {
     const ans = arr.map((word, index) => (
       <span key={index}>
         {word.split('').map((letter, letterIndex) => (
-          <span key={letterIndex}>{letter}</span>
+          <span
+            key={letterIndex}
+            className={`${
+              index === 0 && letterIndex === 0
+                ? 'border-l-2 border-rose-400'
+                : ''
+            }`}
+          >
+            {letter}
+          </span>
         ))}{' '}
       </span>
     ));
@@ -54,6 +71,21 @@ const Home = () => {
       setWords((prevWords) => {
         return prevWords.map((wordElement, index) => {
           if (currIdx !== index) {
+            if (index === currIdx - 1) {
+              // update styles for prev word - remove border style
+              const prevWord = wordElement.props.children[0];
+              const updatedPrevWord = rawWords[index]
+                .split('')
+                .map((letter, letterIndex) => {
+                  return React.cloneElement(prevWord[letterIndex], {
+                    className: updateClassName(
+                      prevWord[letterIndex].props.className,
+                      'border-none'
+                    ),
+                  });
+                });
+              return <span key={index}>{updatedPrevWord} </span>;
+            }
             return wordElement;
           }
 
@@ -63,14 +95,19 @@ const Home = () => {
             .split('')
             .map((letter, letterIndex) => {
               if (currPos !== letterIndex) {
-                // return <span key={letterIndex}>{letter}</span>;
-                return currWord[letterIndex];
+                return React.cloneElement(currWord[letterIndex], {
+                  // update styles
+                  className: updateClassName(
+                    currWord[letterIndex].props.className,
+                    'border-none'
+                  ),
+                });
               }
 
               return (
                 <span
                   key={letterIndex}
-                  className={`${
+                  className={`border-r-2 border-rose-400 ${
                     letter === key ? 'text-white' : 'text-red-400'
                   }`}
                 >
