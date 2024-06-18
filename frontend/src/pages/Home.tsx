@@ -31,9 +31,7 @@ const Home = () => {
           <span
             key={letterIndex}
             className={`${
-              index === 0 && letterIndex === 0
-                ? 'border-l-2 border-rose-400'
-                : ''
+              index === 0 && letterIndex === 0 ? 'border-b-2' : ''
             }`}
           >
             {letter}
@@ -46,24 +44,61 @@ const Home = () => {
 
   const handleKeyPress = useCallback(
     (e: KeyboardEvent) => {
+      // const newCurrPos = currPos + 1;
       if (e.altKey || e.ctrlKey || e.shiftKey) {
         return;
       }
 
-      const key = e.key;
+      const keyPressed = e.key;
 
       // space event
-      if (key === ' ') {
+      if (keyPressed === ' ') {
+        const newIdx = currIdx + 1;
         setCurrIdx((prevIdx) => {
           const newIdx = prevIdx + 1;
           setCurrPos(0); // Reset current character position to start of the next word
           return newIdx;
         });
+
+        setWords((prevWords) => {
+          return prevWords.map((wordElement, index) => {
+            if (index !== newIdx) {
+              if (index === newIdx - 1) {
+                // update styles for prev word - remove border style
+                const prevWord = wordElement.props.children[0];
+                const updatedPrevWord = rawWords[index]
+                  .split('')
+                  .map((_letter, letterIndex) => {
+                    return React.cloneElement(prevWord[letterIndex], {
+                      className: updateClassName(
+                        prevWord[letterIndex].props.className,
+                        'border-none'
+                      ),
+                    });
+                  });
+                return <span key={index}>{updatedPrevWord} </span>;
+              }
+              return wordElement;
+            }
+            // Update styles for the newly selected word
+            const updatedWord = rawWords[index]
+              .split('')
+              .map((letter, letterIndex) => (
+                <span
+                  key={letterIndex}
+                  className={letterIndex === 0 ? 'border-b-2' : ''}
+                >
+                  {letter}
+                </span>
+              ));
+            return <span>{updatedWord} </span>;
+          });
+        });
         return;
       }
 
       // backspace event
-      if (key === 'Backspace') {
+      if (keyPressed === 'Backspace') {
         return;
       }
 
@@ -76,7 +111,7 @@ const Home = () => {
               const prevWord = wordElement.props.children[0];
               const updatedPrevWord = rawWords[index]
                 .split('')
-                .map((letter, letterIndex) => {
+                .map((_letter, letterIndex) => {
                   return React.cloneElement(prevWord[letterIndex], {
                     className: updateClassName(
                       prevWord[letterIndex].props.className,
@@ -94,6 +129,14 @@ const Home = () => {
           const updatedWord = rawWords[index]
             .split('')
             .map((letter, letterIndex) => {
+              if (currPos === letterIndex - 1) {
+                return (
+                  <span key={letterIndex} className='border-b-2'>
+                    {letter}
+                  </span>
+                );
+              }
+
               if (currPos !== letterIndex) {
                 return React.cloneElement(currWord[letterIndex], {
                   // update styles
@@ -107,8 +150,8 @@ const Home = () => {
               return (
                 <span
                   key={letterIndex}
-                  className={`border-r-2 border-rose-400 ${
-                    letter === key ? 'text-white' : 'text-red-400'
+                  className={`${
+                    letter === keyPressed ? 'text-white' : 'text-red-400'
                   }`}
                 >
                   {letter}
@@ -133,9 +176,9 @@ const Home = () => {
 
   return (
     <div>
-      {currIdx}
+      index: {currIdx}
       <div></div>
-      {currPos}
+      pos: {currPos}
       <div className='flex justify-center items-center flex-1 h-[80vh]'>
         <div className='line-clamp-3 font-roboto relative bg-slate-800 text-slate-500 w-[90vw] md:w-[85vw] text-4xl leading-snug'>
           <div>{words}</div>
