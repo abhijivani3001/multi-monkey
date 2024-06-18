@@ -19,6 +19,27 @@ const Home = () => {
       .join(' ');
   };
 
+  const isAllowedKey = (key: string) => {
+    // Regular expression for allowed characters (alphanumeric and special characters)
+    const regex = /^[a-zA-Z0-9~`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/? ]$/;
+    return regex.test(key);
+  };
+
+  const isControlKey = (key: string) => {
+    // Array of allowed control keys
+    const controlKeys = [
+      'Tab',
+      'Enter',
+      'Escape',
+      'ArrowLeft',
+      'ArrowRight',
+      'ArrowUp',
+      'ArrowDown',
+      'Delete',
+    ];
+    return controlKeys.includes(key);
+  };
+
   const generateWords = () => {
     let arr = generate(100);
     if (typeof arr === 'string') arr = arr.split(' ');
@@ -44,11 +65,6 @@ const Home = () => {
 
   const handleKeyPress = useCallback(
     (e: KeyboardEvent) => {
-      // const newCurrPos = currPos + 1;
-      if (e.altKey || e.ctrlKey || e.shiftKey) {
-        return;
-      }
-
       const keyPressed = e.key;
 
       // space event
@@ -92,7 +108,7 @@ const Home = () => {
                   {letter}
                 </span>
               ));
-            return <span>{updatedWord} </span>;
+            return <span key={index}>{updatedWord} </span>;
           });
         });
         return;
@@ -103,7 +119,17 @@ const Home = () => {
         return;
       }
 
-      // update character
+      // other keys
+      if (!isAllowedKey(keyPressed) && !isControlKey(keyPressed)) {
+        return;
+      }
+
+      // extra characters typed more than original size of word
+      if (currPos === rawWords[currIdx].length) {
+        return;
+      }
+
+      // update character(alphanumeric or special characters)
       setWords((prevWords) => {
         return prevWords.map((wordElement, index) => {
           if (currIdx !== index) {
