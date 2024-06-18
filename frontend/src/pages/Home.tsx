@@ -80,6 +80,7 @@ const Home = () => {
               }
               return wordElement;
             }
+
             // Update styles for the newly selected word
             const updatedWord = rawWords[index]
               .split('')
@@ -159,7 +160,20 @@ const Home = () => {
               );
             });
 
-          return <span key={index}>{updatedWord} </span>;
+          return (
+            <span key={index}>
+              {updatedWord}
+              <span
+                className={`${
+                  currPos === wordElement.props.children[0].length - 1
+                    ? 'border-b-2'
+                    : ''
+                }`}
+              >
+                {' '}
+              </span>
+            </span>
+          );
         });
       });
 
