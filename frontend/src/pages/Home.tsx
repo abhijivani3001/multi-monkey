@@ -179,7 +179,18 @@ const Home = () => {
 
               return (
                 <span className='' key={index}>
-                  {updatedWord}{' '}
+                  {updatedWord}
+                  <span
+                    className={`${
+                      lastTypedCharPosition[
+                        lastTypedCharPosition.length - 1
+                      ] === rawWords[index].length
+                        ? 'border-b-2'
+                        : ''
+                    }`}
+                  >
+                    {' '}
+                  </span>
                 </span>
               );
             }
