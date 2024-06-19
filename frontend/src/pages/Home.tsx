@@ -28,21 +28,6 @@ const Home = () => {
     return regex.test(key);
   };
 
-  const isControlKey = (key: string) => {
-    // Array of allowed control keys
-    const controlKeys = [
-      'Tab',
-      'Enter',
-      'Escape',
-      'ArrowLeft',
-      'ArrowRight',
-      'ArrowUp',
-      'ArrowDown',
-      'Delete',
-    ];
-    return controlKeys.includes(key);
-  };
-
   const generateWords = () => {
     let arr = generate(100);
     if (typeof arr === 'string') arr = arr.split(' ');
@@ -229,7 +214,9 @@ const Home = () => {
       }
 
       // other keys
-      if (!isAllowedKey(keyPressed) && !isControlKey(keyPressed)) {
+      const isOtherKey = e.ctrlKey || e.altKey || e.metaKey; // Check for ctrl, alt, meta key combinations with other keys
+
+      if (isOtherKey || !isAllowedKey(keyPressed)) {
         return;
       }
 
