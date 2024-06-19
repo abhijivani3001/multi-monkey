@@ -6,7 +6,9 @@ const Home = () => {
   const [currIdx, setCurrIdx] = useState(0); // number of word
   const [currPos, setCurrPos] = useState(0); // number of char in word
   const [rawWords, setRawWords] = useState<string[]>([]);
-  const lastCharacterPositionTyped: number[] = [];
+  const [lastTypedCharPosition, setLastTypedCharPosition] = useState<number[]>(
+    []
+  );
 
   useEffect(() => {
     generateWords();
@@ -70,7 +72,7 @@ const Home = () => {
 
       // space event
       if (keyPressed === ' ') {
-        lastCharacterPositionTyped.push(currPos);
+        setLastTypedCharPosition((prev) => [...prev, currPos]);
 
         const newIdx = currIdx + 1;
         setCurrIdx((prevIdx) => {
@@ -119,6 +121,10 @@ const Home = () => {
 
       // backspace event
       if (keyPressed === 'Backspace') {
+        if (currIdx === 0 && currPos === 0) {
+          return;
+        }
+
         if (currPos > 0) {
           setWords((prevWords) => {
             return prevWords.map((wordElement, index) => {
@@ -155,10 +161,10 @@ const Home = () => {
             });
           });
           setCurrPos((prevPos) => prevPos - 1);
+          return;
         }
 
         // currPos===0
-        // how to implement?
         setWords((prevWords) => {
           return prevWords.map((wordElement, index) => {
             if (index === currIdx - 1) {
@@ -169,9 +175,7 @@ const Home = () => {
                 .map((letter, letterIndex) => {
                   if (
                     letterIndex ===
-                    lastCharacterPositionTyped[
-                      lastCharacterPositionTyped.length - 1
-                    ]
+                    lastTypedCharPosition[lastTypedCharPosition.length - 1]
                   ) {
                     return (
                       <span key={letterIndex} className='border-b-2'>
@@ -179,14 +183,13 @@ const Home = () => {
                       </span>
                     );
                   }
-                  // return React.cloneElement(currWord[letterIndex], {
-                  //   // update styles
-                  //   className: updateClassName(
-                  //     currWord[letterIndex].props.className,
-                  //     'border-none'
-                  //   ),
-                  // });
-                  return letter;
+                  return React.cloneElement(currWord[letterIndex], {
+                    // update styles
+                    className: updateClassName(
+                      currWord[letterIndex].props.className,
+                      'border-none'
+                    ),
+                  });
                 });
 
               return (
@@ -219,11 +222,9 @@ const Home = () => {
             return wordElement;
           });
         });
-        setCurrPos(
-          lastCharacterPositionTyped[lastCharacterPositionTyped.length - 1] || 0
-        );
+        setCurrPos(lastTypedCharPosition[lastTypedCharPosition.length - 1]);
         setCurrIdx((prevIdx) => prevIdx - 1);
-        lastCharacterPositionTyped.pop();
+        setLastTypedCharPosition((prevArr) => prevArr.slice(0, -1));
         return;
       }
 
@@ -313,7 +314,7 @@ const Home = () => {
 
       setCurrPos((prevPos) => prevPos + 1);
     },
-    [currIdx, currPos, lastCharacterPositionTyped, rawWords]
+    [currIdx, currPos, lastTypedCharPosition, rawWords]
   );
 
   useEffect(() => {
