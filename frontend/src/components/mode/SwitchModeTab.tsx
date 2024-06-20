@@ -7,7 +7,10 @@ import { useTypingModeContext } from '@/context/TypingModeContext';
 
 const SwitchModeTab = () => {
   const { typingMode, setTypingMode } = useTypingModeContext();
-  console.log(typingMode);
+
+  const timeModeValues = [15, 30, 60, 120];
+  const wordsModeValues = [10, 25, 50, 100];
+  const quoteModeValues = ['all', 'short', 'medium', 'long'];
 
   return (
     <>
@@ -37,7 +40,7 @@ const SwitchModeTab = () => {
                 typingMode.mode === 'time' ? 'text-sky-400' : ''
               }`}
               onClick={() => {
-                setTypingMode({ mode: 'time' });
+                setTypingMode({ mode: 'time', value: timeModeValues[0] });
               }}
             >
               <div>
@@ -50,7 +53,7 @@ const SwitchModeTab = () => {
                 typingMode.mode === 'words' ? 'text-sky-400' : ''
               }`}
               onClick={() => {
-                setTypingMode({ mode: 'words' });
+                setTypingMode({ mode: 'words', value: wordsModeValues[0] });
               }}
             >
               <div>
@@ -63,7 +66,7 @@ const SwitchModeTab = () => {
                 typingMode.mode === 'quote' ? 'text-sky-400' : ''
               }`}
               onClick={() => {
-                setTypingMode({ mode: 'quote' });
+                setTypingMode({ mode: 'quote', value: quoteModeValues[0] });
               }}
             >
               <div>
@@ -76,10 +79,39 @@ const SwitchModeTab = () => {
 
           {/* numeric values */}
           <div className='flex justify-center items-center gap-4'>
-            <button className='btn2'>15</button>
-            <button className='btn2'>30</button>
-            <button className='btn2'>60</button>
-            <button className='btn2'>120</button>
+            {typingMode.mode === 'time' &&
+              timeModeValues.map((item) => (
+                <button
+                  key={item}
+                  className={`btn2 ${
+                    item === typingMode.value ? 'text-sky-400' : ''
+                  }`}
+                >
+                  {item}
+                </button>
+              ))}
+            {typingMode.mode === 'words' &&
+              wordsModeValues.map((item) => (
+                <button
+                  key={item}
+                  className={`btn2 ${
+                    item === typingMode.value ? 'text-sky-400' : ''
+                  }`}
+                >
+                  {item}
+                </button>
+              ))}
+            {typingMode.mode === 'quote' &&
+              quoteModeValues.map((item) => (
+                <button
+                  key={item}
+                  className={`btn2 ${
+                    item === typingMode.value ? 'text-sky-400' : ''
+                  }`}
+                >
+                  {item}
+                </button>
+              ))}
           </div>
         </div>
 

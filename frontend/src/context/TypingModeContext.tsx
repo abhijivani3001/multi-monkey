@@ -2,6 +2,7 @@ import React, { useState, useContext, createContext } from 'react';
 
 interface TypingMode {
   mode: 'time' | 'words' | 'quote';
+  value: number | string;
 }
 
 interface TypingModeContextProps {
@@ -31,7 +32,10 @@ export const TypingModeProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [typingMode, setTypingMode] = useState<TypingMode>({ mode: 'time' });
+  const [typingMode, setTypingMode] = useState<TypingMode>({
+    mode: 'time',
+    value: 15,
+  });
 
   return (
     <TypingModeContext.Provider value={{ typingMode, setTypingMode }}>
