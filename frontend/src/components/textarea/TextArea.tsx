@@ -1,5 +1,5 @@
-import { generate } from 'random-words';
 import React, { useCallback, useEffect, useState } from 'react';
+import { generate } from 'random-words';
 import { VscDebugRestart } from 'react-icons/vsc';
 import {
   Tooltip,
@@ -56,6 +56,10 @@ const TextArea = () => {
       </span>
     ));
     setWords(ans);
+
+    setCurrIdx(0);
+    setCurrPos(0);
+    setLastTypedCharPosition([]);
   };
 
   const handleKeyPress = useCallback(
@@ -339,7 +343,13 @@ const TextArea = () => {
             <TooltipProvider delayDuration={100}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button onClick={generateWords}>
+                  <button
+                    onClick={(e) => {
+                      e.currentTarget.blur(); // remove focus from the button
+                      generateWords();
+                    }}
+                    className='outline-none border-none focus:ring-0 focus:outline-none'
+                  >
                     <VscDebugRestart className='text-slate-500 font-semibold h-6 w-6 hover:text-slate-100 transition' />
                   </button>
                 </TooltipTrigger>
