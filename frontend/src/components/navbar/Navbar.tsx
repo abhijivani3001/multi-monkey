@@ -2,19 +2,19 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   return (
-    <nav className='border-slate-800 bg-slate-900 z-30 w-full shadow-lg sticky top-0'>
-      <div className='max-w-screen-xl flex items-center justify-between mx-auto p-4 my-auto'>
+    <nav className='z-30 w-full sticky top-0'>
+      <div className='max-w-screen-xl flex items-center justify-between mx-auto px-8 py-4 md:p-4 my-auto'>
         <Link
           to={'/'}
           className='flex focus:outline-none items-center space-x-3 rtl:space-x-reverse'
         >
           <img
             src='/logos/logo-base-1200x1200.png'
-            className='h-12 w-12 object-contain'
+            className='h-8 w-8 md:h-12 md:w-12 object-contain'
           />
-          <span className='hidden md:block self-center text-3xl my-auto font-semibold whitespace-nowrap text-slate-100'>
-            <span>Multi</span>
-            <span className='bg-gradient-to-r from-indigo-400 to-sky-300 bg-clip-text text-transparent'>
+          <span className='hidden md:block self-center text-3xl my-auto font-semibold whitespace-nowrap'>
+            <span className='text-white'>Multi</span>
+            <span className='bg-gradient-to-r from-blue-400 to-sky-300 bg-clip-text text-transparent'>
               Monkey
             </span>
           </span>
