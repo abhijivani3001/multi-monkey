@@ -7,8 +7,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../ui/tooltip';
+import { useTypingModeContext } from '@/context/TypingModeContext';
+import { useIsTypingContext } from '@/context/IsTypingContext';
 
 const TextArea = () => {
+  const { typingMode } = useTypingModeContext();
+  const { isTyping, setIsTyping } = useIsTypingContext();
+
   const [words, setWords] = useState<JSX.Element[]>([]);
   const [currIdx, setCurrIdx] = useState(0); // number of word
   const [currPos, setCurrPos] = useState(0); // number of char in word
@@ -17,9 +22,10 @@ const TextArea = () => {
     []
   );
 
-  useEffect(() => {
-    generateWords();
-  }, []);
+  const [timeLeft, setTimeLeft] = useState<number>(
+    typeof typingMode.value === 'number' ? typingMode.value : 10
+  ); // Timer state in seconds
+  // const [isTimerRunning, setIsTimerRunning] = useState(false); // Timer running state
 
   const updateClassName = (className: string, newBorderClass: string) => {
     return className
@@ -60,6 +66,8 @@ const TextArea = () => {
     setCurrIdx(0);
     setCurrPos(0);
     setLastTypedCharPosition([]);
+    setTimeLeft(typeof typingMode.value === 'number' ? typingMode.value : 10); // reset timer
+    setIsTyping(false); // stop typing
   };
 
   const handleKeyPress = useCallback(
@@ -247,6 +255,10 @@ const TextArea = () => {
         return;
       }
 
+      if (!isTyping && isAllowedKey(keyPressed)) {
+        setIsTyping(true); // Start the timer on first valid key press
+      }
+
       // update character(alphanumeric or special characters)
       setWords((prevWords) => {
         return prevWords.map((wordElement, index) => {
@@ -323,8 +335,17 @@ const TextArea = () => {
 
       setCurrPos((prevPos) => prevPos + 1);
     },
-    [currIdx, currPos, lastTypedCharPosition, rawWords]
+    [currIdx, currPos, isTyping, lastTypedCharPosition, rawWords, setIsTyping]
   );
+
+  useEffect(() => {
+    generateWords();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    setTimeLeft(typeof typingMode.value === 'number' ? typingMode.value : 10);
+  }, [typingMode]);
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyPress);
@@ -332,10 +353,31 @@ const TextArea = () => {
     return () => document.removeEventListener('keydown', handleKeyPress);
   }, [handleKeyPress]);
 
+  useEffect(() => {
+    if (!isTyping) {
+      return;
+    }
+
+    if (timeLeft === 0) {
+      alert('Time is up!');
+      setIsTyping(false);
+      return;
+    }
+
+    const timerId = setInterval(() => {
+      setTimeLeft((prevTime) => prevTime - 1);
+    }, 1000);
+
+    return () => clearInterval(timerId);
+  }, [isTyping, setIsTyping, timeLeft]);
+
   return (
     <>
       <div className='flex justify-center items-center flex-1 h-[60vh] mx-auto'>
         <div>
+          <div className='mb-2 min-h-10'>
+            {isTyping && <p className='text-sky-400 text-4xl'>{timeLeft}</p>}
+          </div>
           <div className='line-clamp-3 font-roboto relative bg-slate-800 text-slate-500  w-[90vw] md:w-[85vw] max-w-screen-2xl text-4xl leading-snug'>
             <div>{words}</div>
           </div>
