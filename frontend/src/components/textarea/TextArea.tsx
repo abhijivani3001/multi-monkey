@@ -339,7 +339,7 @@ const TextArea = () => {
             <TooltipProvider delayDuration={100}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button>
+                  <button onClick={generateWords}>
                     <VscDebugRestart className='text-slate-500 font-semibold h-6 w-6 hover:text-slate-100 transition' />
                   </button>
                 </TooltipTrigger>

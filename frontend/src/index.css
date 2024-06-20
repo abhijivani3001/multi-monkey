@@ -87,7 +87,12 @@
     scrollbar-width: none; /* Firefox */
   }
   .btn {
+    /* primary button */
     @apply px-4 py-2 rounded-md font-medium bg-blue-600 text-white transition hover:bg-opacity-80 focus:outline-none focus:ring-0;
+  }
+  .btn2 {
+    /* for <icon + text> button */
+    @apply flex justify-center items-center gap-2 hover:text-slate-100 transition;
   }
   .error-msg {
     @apply text-slate-300 h-[80vh] text-xl flex items-center justify-center;
