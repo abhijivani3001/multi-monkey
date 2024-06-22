@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import userRouter from './routes/userRouter.js';
 
 const app = express();
 
@@ -13,5 +14,7 @@ app.use('/hello', (req, res) => {
     data: 'hello world',
   });
 });
+
+app.use('/api/users', userRouter);
 
 export default app;
