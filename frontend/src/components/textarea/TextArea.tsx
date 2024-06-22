@@ -442,21 +442,39 @@ const TextArea = () => {
       const minutes =
         (typeof typingMode.value === 'number' ? typingMode.value : 10) / 60;
 
+      let missedChars = 0;
+      for (let i = 0; i < currIdx; i++) {
+        missedChars += rawWords[i].length;
+        missedChars -= typedWords[i].length;
+      }
+
       const rawWpm = Math.round(totalCharsTyped / 5 / minutes);
       setRawWpmOfEachSecond((prev) => [...prev, rawWpm]);
 
       const netWpm = Math.max(
         0,
-        Math.round((totalCharsTyped / 5 - uncorrectedErrors) / minutes)
+        Math.round(
+          (totalCharsTyped / 5 - (uncorrectedErrors + missedChars)) / minutes
+        )
       );
       setNetWpmOfEachSecond((prev) => [...prev, netWpm]);
 
       const calculatedAccuracy = Math.round(
-        ((totalCharsTyped - uncorrectedErrors) / totalCharsTyped) * 100
+        ((totalCharsTyped - (uncorrectedErrors + missedChars)) /
+          totalCharsTyped) *
+          100
       );
       setAccuracy(calculatedAccuracy);
     }
-  }, [timeLeft, totalCharsTyped, typingMode.value, uncorrectedErrors]);
+  }, [
+    currIdx,
+    rawWords,
+    timeLeft,
+    totalCharsTyped,
+    typedWords,
+    typingMode.value,
+    uncorrectedErrors,
+  ]);
 
   return (
     <>
