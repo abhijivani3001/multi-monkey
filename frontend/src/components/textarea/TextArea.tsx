@@ -83,11 +83,21 @@ const TextArea = () => {
     setLastTypedCharPosition([]);
     setTimeLeft(typeof typingMode.value === 'number' ? typingMode.value : 10); // reset timer
     setIsTyping(false); // stop typing
+    setTotalCharsTyped(0);
+    setUncorrectedErrors(0);
+    setUncorrectedErrorsIndexes([]);
+    setRawWpmOfEachSecond([]);
+    setNetWpmOfEachSecond([]);
+    setAccuracy(0);
+    setTypedChars('');
+    setTypedWords([]);
   };
 
   const handleKeyPress = useCallback(
     (e: KeyboardEvent) => {
       const keyPressed = e.key;
+
+      if (timeLeft === 0) return;
 
       // ----- space event -----
       if (keyPressed === ' ') {
@@ -389,6 +399,7 @@ const TextArea = () => {
       lastTypedCharPosition,
       rawWords,
       setIsTyping,
+      timeLeft,
       typedChars,
       uncorrectedErrorsIndexes,
     ]
@@ -415,7 +426,6 @@ const TextArea = () => {
     }
 
     if (timeLeft === 0) {
-      alert('Time is up!');
       setIsTyping(false);
       return;
     }
@@ -427,33 +437,6 @@ const TextArea = () => {
     return () => clearInterval(timerId);
   }, [isTyping, setIsTyping, timeLeft]);
 
-  // useEffect(() => {
-  //   if (timeLeft === 0) {
-  //     const elapsedTime =
-  //       (typeof typingMode.value === 'number' ? typingMode.value : 10) -
-  //       timeLeft;
-  //     const minutes = elapsedTime / 60;
-  //     const calculatedWpm = Number((totalWordsTyped / minutes).toFixed(2));
-
-  //     // Calculate Accuracy
-  //     const accuracy = Number(
-  //       ((correctWords * 100) / totalWordsTyped).toFixed(2)
-  //     );
-
-  //     // Update state
-  //     setWpm(calculatedWpm);
-  //     setAccuracy(accuracy);
-  //   }
-  // }, [
-  //   timeLeft,
-  //   isTyping,
-  //   rawWords,
-  //   typingMode.value,
-  //   currIdx,
-  //   totalWordsTyped,
-  //   correctWords,
-  // ]);
-
   useEffect(() => {
     if (timeLeft === 0) {
       const minutes =
@@ -462,8 +445,9 @@ const TextArea = () => {
       const rawWpm = Math.round(totalCharsTyped / 5 / minutes);
       setRawWpmOfEachSecond((prev) => [...prev, rawWpm]);
 
-      const netWpm = Math.round(
-        (totalCharsTyped / 5 - uncorrectedErrors) / minutes
+      const netWpm = Math.max(
+        0,
+        Math.round((totalCharsTyped / 5 - uncorrectedErrors) / minutes)
       );
       setNetWpmOfEachSecond((prev) => [...prev, netWpm]);
 
@@ -478,12 +462,43 @@ const TextArea = () => {
     <>
       <div className='flex justify-center items-center flex-1 h-[60vh] mx-auto'>
         <div>
-          <div className='mb-2 min-h-10'>
-            {isTyping && <p className='text-sky-400 text-4xl'>{timeLeft}</p>}
-          </div>
-          <div className='line-clamp-3 font-roboto relative bg-slate-800 text-slate-500  w-[90vw] md:w-[85vw] max-w-screen-2xl text-4xl leading-snug'>
-            <div>{words}</div>
-          </div>
+          {timeLeft !== 0 && (
+            <div>
+              <div className='mb-2 min-h-10'>
+                {isTyping && (
+                  <p className='text-sky-400 text-4xl'>{timeLeft}</p>
+                )}
+              </div>
+              <div className='line-clamp-3 font-roboto relative bg-slate-800 text-slate-500  w-[90vw] md:w-[85vw] max-w-screen-2xl text-4xl leading-snug'>
+                <div>{words}</div>
+              </div>
+            </div>
+          )}
+
+          {!isTyping && timeLeft === 0 && (
+            <div className='flex justify-between items-center gap-6 flex-wrap'>
+              <div className='flex justify-center items-center flex-col gap-1 px-10 py-6 border border-slate-700 rounded-xl bg-slate-900 shadow-lg'>
+                <p className='text-sky-400 text-6xl font-semibold'>
+                  {rawWpmOfEachSecond[rawWpmOfEachSecond.length - 1] || 0}
+                </p>
+                <p className='text-slate-400 text-sm'>Raw WPM</p>
+              </div>
+              <div className='flex justify-center items-center flex-col gap-1 px-10 py-6 border border-slate-700 rounded-xl bg-slate-900 shadow-lg'>
+                <p className='text-sky-400 text-6xl font-semibold'>
+                  {netWpmOfEachSecond[netWpmOfEachSecond.length - 1] || 0}
+                </p>
+                <p className='text-slate-400 text-sm'>Net WPM</p>
+              </div>
+              <div className='flex justify-center items-center flex-col gap-1 px-10 py-6 border border-slate-700 rounded-xl bg-slate-900 shadow-lg'>
+                <p className='text-sky-400 text-6xl font-semibold'>
+                  {accuracy}
+                  <span className='text-3xl ml-1'>%</span>
+                </p>
+                <p className='text-slate-400 text-sm'>Accuracy</p>
+              </div>
+            </div>
+          )}
+
           <div className='flex justify-center items-center mt-8'>
             <TooltipProvider delayDuration={100}>
               <Tooltip>
@@ -505,17 +520,6 @@ const TextArea = () => {
               </Tooltip>
             </TooltipProvider>
           </div>
-
-          {/* <div>wpm: {wpm}</div>
-          <div>acc: {accuracy}</div>
-          <div>correct: {correctWords}</div>
-          <div>total: {totalWordsTyped}</div> */}
-
-          <div>raw: {rawWpmOfEachSecond}</div>
-          <div>net: {netWpmOfEachSecond}</div>
-          <div>acc: {accuracy}</div>
-          <div>err: {uncorrectedErrors}</div>
-          <div>totaltyped: {totalCharsTyped}</div>
         </div>
       </div>
     </>
