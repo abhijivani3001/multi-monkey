@@ -1,6 +1,11 @@
-import User from '../models/userModel.js';
+import { NextFunction, Request, Response } from 'express';
+import User from '../models/userModel';
 
-export const createUser = async (req, res, next) => {
+export const createUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { email } = req.body;
 
@@ -23,7 +28,11 @@ export const createUser = async (req, res, next) => {
   }
 };
 
-export const getAllUsers = async (req, res) => {
+export const getAllUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const users = await User.find();
     res.status(200).json({
@@ -40,7 +49,11 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-export const updateUser = async (req, res) => {
+export const updateUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { userId } = req.params;
     const updates = req.body;
@@ -71,7 +84,11 @@ export const updateUser = async (req, res) => {
   }
 };
 
-export const deleteUser = async (req, res) => {
+export const deleteUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { userId } = req.params;
     const deletedUser = await User.findByIdAndDelete(userId);
