@@ -1,14 +1,8 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
+import { IUser } from '../interfaces/user';
 
-interface User {
-  username: string;
-  email: string;
-  password: string;
-  passwordConfirm: string;
-}
-
-const userSchema = new mongoose.Schema<User>({
+const userSchema = new mongoose.Schema<IUser>({
   username: {
     type: String,
     required: true,
@@ -32,13 +26,14 @@ const userSchema = new mongoose.Schema<User>({
     required: true,
     minlength: 8,
     validate: {
-      validator: function (this: User) {
+      validator: function (this: IUser) {
         return this.password === this.passwordConfirm;
       },
       message: 'Passwords are not the same!',
     },
+    select: false,
   },
 });
 
-const User = mongoose.model<User>('User', userSchema);
+const User = mongoose.model<IUser>('User', userSchema);
 export default User;
