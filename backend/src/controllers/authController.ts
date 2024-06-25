@@ -1,7 +1,6 @@
-import crypto from 'crypto';
-import { promisify } from 'util';
-import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request as ExpressRequest, Response, NextFunction } from 'express';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import crypto from 'crypto';
 import User from './../models/userModel';
 import catchAsync from './../utils/catchAsync';
 import { AppError } from '../utils/appError';
@@ -12,9 +11,17 @@ interface Request extends ExpressRequest {
   user?: IUser;
 }
 
+const getEnvVar = (key: string, defaultValue?: string): string => {
+  const value = process.env[key];
+  if (!value && defaultValue === undefined) {
+    throw new Error(`Missing environment variable: ${key}`);
+  }
+  return value || defaultValue!;
+};
+
 const signToken = (id: string): string => {
-  return jwt.sign({ id }, process.env.JWT_SECRET!, {
-    expiresIn: process.env.JWT_EXPIRES_IN!,
+  return jwt.sign({ id }, getEnvVar('JWT_SECRET'), {
+    expiresIn: getEnvVar('JWT_EXPIRES_IN'),
   });
 };
 
@@ -24,19 +31,19 @@ const createSendToken = (
   req: Request,
   res: Response
 ): void => {
-  const token = signToken(user._id.toString());
+  const token = signToken(user._id);
 
   res.cookie('jwt', token, {
     expires: new Date(
       Date.now() +
-        parseInt(process.env.JWT_COOKIE_EXPIRES_IN!) * 24 * 60 * 60 * 1000
+        parseInt(getEnvVar('JWT_COOKIE_EXPIRES_IN')) * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
     secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
   });
 
   // Remove password from output
-  user.password = undefined;
+  user.password = '';
 
   res.status(statusCode).json({
     status: 'success',
@@ -49,7 +56,7 @@ const createSendToken = (
 
 export const signup = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const newUser = await User.create({
+    const newUser: IUser = await User.create({
       name: req.body.name,
       email: req.body.email,
       password: req.body.password,
@@ -71,9 +78,11 @@ export const login = catchAsync(
       return next(new AppError('Please provide email and password!', 400));
     }
 
-    const user = await User.findOne({ email }).select('+password');
+    const user: IUser | null = await User.findOne({ email }).select(
+      '+password'
+    );
 
-    if (!user || !(await user.correctPassword(password, user.password || ''))) {
+    if (!user || !(await user.correctPassword(password, user.password))) {
       return next(new AppError('Incorrect email or password', 401));
     }
 
@@ -89,19 +98,32 @@ export const logout = (req: Request, res: Response): void => {
   res.status(200).json({ status: 'success' });
 };
 
+const extractToken = (req: Request): string | undefined => {
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    return req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    return req.cookies.jwt;
+  }
+  return undefined;
+};
+
+const verifyToken = (token: string): Promise<JwtPayload> => {
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, getEnvVar('JWT_SECRET'), (err, decoded) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(decoded as JwtPayload);
+    });
+  });
+};
+
 export const protect = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    // 1. getting token and check if it's there
-    let token: string | undefined;
-
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith('Bearer')
-    ) {
-      token = req.headers.authorization.split(' ')[1]; // [0] = Bearer, [1] = token
-    } else if (req.cookies.jwt) {
-      token = req.cookies.jwt;
-    }
+    const token = extractToken(req);
 
     if (!token) {
       return next(
@@ -109,11 +131,9 @@ export const protect = catchAsync(
       );
     }
 
-    // 2. Verification token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+    const decoded = await verifyToken(token);
 
-    // 3. Check if user still exists
-    const currentUser = await User.findById(decoded.id);
+    const currentUser: IUser | null = await User.findById(decoded.id);
     if (!currentUser) {
       return next(
         new AppError(
@@ -123,7 +143,6 @@ export const protect = catchAsync(
       );
     }
 
-    // 4. check if user changed password after the token was issued
     if (currentUser.changedPasswordAfter(decoded.iat ?? 0)) {
       return next(
         new AppError(
@@ -133,7 +152,6 @@ export const protect = catchAsync(
       );
     }
 
-    // GRANT ACCESS TO PROTECTED ROUTE
     req.user = currentUser;
     res.locals.user = currentUser;
     next();
@@ -148,17 +166,10 @@ export const isLoggedIn = async (
 ) => {
   if (req.cookies.jwt) {
     try {
-      const decoded = jwt.verify(
-        req.cookies.jwt,
-        process.env.JWT_SECRET!
-      ) as JwtPayload;
+      const decoded = await verifyToken(req.cookies.jwt);
 
-      const currentUser = await User.findById(decoded.id);
-      if (!currentUser) {
-        return next();
-      }
-
-      if (currentUser.changedPasswordAfter(decoded.iat ?? 0)) {
+      const currentUser: IUser | null = await User.findById(decoded.id);
+      if (!currentUser || currentUser.changedPasswordAfter(decoded.iat ?? 0)) {
         return next();
       }
 
@@ -185,7 +196,7 @@ export const restrictTo = (...roles: string[]) => {
 
 export const forgotPassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const user = await User.findOne({ email: req.body.email });
+    const user: IUser | null = await User.findOne({ email: req.body.email });
     if (!user) {
       return next(new AppError('There is no user with email address.', 404));
     }
@@ -225,7 +236,7 @@ export const resetPassword = catchAsync(
       .update(req.params.token)
       .digest('hex');
 
-    const user = await User.findOne({
+    const user: IUser | null = await User.findOne({
       passwordResetToken: hashedToken,
       passwordResetExpires: { $gt: Date.now() },
     });
@@ -245,19 +256,15 @@ export const resetPassword = catchAsync(
 
 export const updatePassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const user = await User.findById(req.user?.username).select('+password');
+    const user: IUser | null = await User.findById(req.user?._id).select(
+      '+password'
+    );
 
     if (
-      !(await user?.correctPassword(
-        req.body.passwordCurrent,
-        user?.password ?? ''
-      ))
+      !user ||
+      !(await user.correctPassword(req.body.passwordCurrent, user.password))
     ) {
       return next(new AppError('Your current password is wrong.', 401));
-    }
-
-    if (!user) {
-      return next(new AppError('No user found with that ID', 404));
     }
 
     user.password = req.body.password;
