@@ -15,6 +15,14 @@ const userSchema = new mongoose.Schema<IUser>({
     lowercase: true,
     validate: [validator.isEmail, 'Please enter a valid email'],
   },
+  photo: {
+    type: String,
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user',
+  },
   password: {
     type: String,
     required: true,
@@ -31,6 +39,14 @@ const userSchema = new mongoose.Schema<IUser>({
       },
       message: 'Passwords are not the same!',
     },
+    select: false,
+  },
+  passwordChangedAt: Date,
+  passwordResetToken: String,
+  passwordResetExpires: Date,
+  active: {
+    type: Boolean,
+    default: true,
     select: false,
   },
 });
