@@ -33,17 +33,16 @@ const createSendToken = (
 ): void => {
   const token = signToken(user._id);
 
-  res.cookie('jwt', token, {
+  const cookieOptions = {
     expires: new Date(
       Date.now() +
         parseInt(getEnvVar('JWT_COOKIE_EXPIRES_IN')) * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
     secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
-  });
+  };
 
-  // Remove password from output
-  user.password = '';
+  res.cookie('jwt', token, cookieOptions);
 
   res.status(statusCode).json({
     status: 'success',
@@ -61,6 +60,8 @@ export const signup = catchAsync(
       email: req.body.email,
       password: req.body.password,
       passwordConfirm: req.body.passwordConfirm,
+      role: req.body.role,
+      passwordChangedAt: req.body.passwordChangedAt,
     });
 
     const url = `${req.protocol}://${req.get('host')}/me`;
