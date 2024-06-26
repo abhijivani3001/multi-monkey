@@ -33,11 +33,12 @@ export const sendWelcomeEmail = async (
 ): Promise<void> => {
   const html = `
     <div>
-      <h1>Welcome to the Natours Family, ${user.username}!</h1>
+      <h1>Welcome to the Multi Monkey, ${user.username}!</h1>
       <p>We're excited to have you on board. Please visit the following link to get started:</p>
       <a href="${url}">Get Started</a>
     </div>
   `;
+
   await sendEmail({
     from: process.env.EMAIL_FROM!,
     to: user.email,
@@ -59,6 +60,7 @@ export const sendPasswordResetEmail = async (
       <a href="${url}">Reset Password</a>
     </div>
   `;
+  
   await sendEmail({
     from: process.env.EMAIL_FROM!,
     to: user.email,
