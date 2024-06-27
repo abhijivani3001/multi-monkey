@@ -80,7 +80,7 @@ export const login = catchAsync(
     }
 
     const user: IUser | null = await User.findOne({ email }).select(
-      '+password'
+      '+password' // select password field explicitly, by default mongoose does not include fields that are marked with select: false in the schema
     );
 
     if (!user || !(await user.correctPassword(password, user.password))) {
@@ -208,7 +208,7 @@ export const forgotPassword = catchAsync(
     try {
       const resetURL = `${req.protocol}://${req.get(
         'host'
-      )}/api/v1/users/resetPassword/${resetToken}`;
+      )}/api/users/resetPassword/${resetToken}`;
       await sendPasswordResetEmail(user, resetURL);
 
       res.status(200).json({

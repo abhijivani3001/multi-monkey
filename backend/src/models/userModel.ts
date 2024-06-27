@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import validator from 'validator';
 import { IUser } from '../interfaces/user';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 
 const userSchema = new mongoose.Schema<IUser>({
   username: {
@@ -63,6 +64,43 @@ userSchema.pre('save', async function (next: () => void) {
   this.passwordConfirm = undefined;
   next();
 });
+
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password') || this.isNew) {
+    return next();
+  }
+  this.passwordChangedAt = new Date(Date.now() - 1000);
+  next();
+});
+
+userSchema.pre(/^find/, function (this: mongoose.Query<any, any>, next) {
+  // we are looking for the strings that starts with 'find' word
+  // this points to the current query
+  this.find({ active: { $ne: false } });
+  next();
+});
+
+userSchema.methods.correctPassword = async function (
+  candidatePassword: string,
+  userPassword: string
+) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
+
+userSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  console.log('reset', { resetToken }, this.passwordResetToken);
+
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+
+  return resetToken;
+};
 
 const User = mongoose.model<IUser>('User', userSchema);
 export default User;
