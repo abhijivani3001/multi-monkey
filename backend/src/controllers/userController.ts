@@ -5,7 +5,7 @@ import catchAsync from '../utils/catchAsync';
 
 interface AuthenticatedRequest extends Request {
   user: {
-    id: string;
+    _id: string;
   };
   file: {
     filename: string;
@@ -22,7 +22,7 @@ const filterObj = (obj: { [x: string]: any }, ...allowedFields: string[]) => {
 
 export const getMe = catchAsync(
   async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    req.params.id = req.user.id;
+    req.params.userId = req.user._id;
     next();
   }
 );
@@ -40,7 +40,7 @@ export const updateMe = catchAsync(
     if (req.file) filteredBody.photo = req.file.filename;
 
     const updatedUser = await User.findByIdAndUpdate(
-      req.user.id,
+      req.user._id,
       filteredBody,
       {
         new: true,
@@ -59,7 +59,7 @@ export const updateMe = catchAsync(
 
 export const deleteMe = catchAsync(
   async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    await User.findByIdAndUpdate(req.user.id, { active: false });
+    await User.findByIdAndUpdate(req.user._id, { active: false });
 
     res.status(204).json({
       status: 'Success',

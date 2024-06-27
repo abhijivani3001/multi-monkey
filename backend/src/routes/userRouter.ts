@@ -4,6 +4,7 @@ import {
   deleteMe,
   deleteUser,
   getAllUsers,
+  getMe,
   getUser,
   updateMe,
   updateUser,
@@ -31,7 +32,7 @@ router.patch('/resetPassword/:token', resetPassword);
 // ----- Protect all routes after this middleware -----
 router.use(protect);
 
-router.get('/me', getUser, getUser);
+router.get('/me', getMe, getUser);
 router.patch('/updateMyPassword', updatePassword);
 router.patch('/updateMe', updateMe);
 router.delete('/deleteMe', deleteMe);
