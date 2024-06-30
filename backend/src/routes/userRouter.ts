@@ -17,7 +17,7 @@ import {
   resetPassword,
   restrictTo,
   signup,
-  updatePassword,
+  updateMyPassword,
 } from '../controllers/authController';
 
 const router = express.Router();
@@ -33,7 +33,7 @@ router.patch('/resetPassword/:token', resetPassword);
 router.use(protect);
 
 router.get('/me', getMe, getUser);
-router.patch('/updateMyPassword', updatePassword);
+router.patch('/updateMyPassword', updateMyPassword);
 router.patch('/updateMe', updateMe);
 router.delete('/deleteMe', deleteMe);
 
@@ -44,4 +44,4 @@ router.route('/').post(createUser).get(getAllUsers);
 
 router.route('/:userId').get(getUser).patch(updateUser).delete(deleteUser);
 
-export default router;
+export default router;f

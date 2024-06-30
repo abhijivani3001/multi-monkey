@@ -31,13 +31,13 @@ const userSchema = new mongoose.Schema<IUser>({
     minlength: 8,
     select: false,
   },
-  passwordConfirm: {
+  confirmPassword: {
     type: String,
     required: [true, 'Please confirm your password'],
     minlength: 8,
     validate: {
       validator: function (this: IUser) {
-        return this.password === this.passwordConfirm;
+        return this.password === this.confirmPassword;
       },
       message: 'Passwords are not the same!',
     },
@@ -60,8 +60,8 @@ userSchema.pre('save', async function (next: () => void) {
   // hash the password with cost of 12
   this.password = await bcrypt.hash(this.password, 12);
 
-  // delete passwordConfirm field
-  this.passwordConfirm = undefined;
+  // delete confirmPassword field
+  this.confirmPassword = undefined;
   next();
 });
 

@@ -2,15 +2,14 @@ import { NextFunction, Request, Response } from 'express';
 import User from '../models/userModel';
 import { AppError } from '../utils/appError';
 import catchAsync from '../utils/catchAsync';
-
-interface AuthenticatedRequest extends Request {
-  user: {
-    _id: string;
-  };
-  file: {
-    filename: string;
-  };
-}
+import {
+  ICreateUserRequest,
+  IDeleteMeRequest,
+  IDeleteUserRequest,
+  IGetMeRequest,
+  IUpdateMeRequest,
+  IUpdateUserRequest,
+} from '../interfaces/request/user.request';
 
 const filterObj = (obj: { [x: string]: any }, ...allowedFields: string[]) => {
   const newObj: { [key: string]: any } = {};
@@ -21,15 +20,15 @@ const filterObj = (obj: { [x: string]: any }, ...allowedFields: string[]) => {
 };
 
 export const getMe = catchAsync(
-  async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  async (req: IGetMeRequest, res: Response, next: NextFunction) => {
     req.params.userId = req.user._id;
     next();
   }
 );
 
 export const updateMe = catchAsync(
-  async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    if (req.body.password || req.body.passwordConfirm) {
+  async (req: IUpdateMeRequest, res: Response, next: NextFunction) => {
+    if (req.body.password || req.body.confirmPassword) {
       throw new AppError(
         'This route is not for password updates. Please use /updateMyPassword',
         400
@@ -68,7 +67,7 @@ export const updateMe = catchAsync(
 );
 
 export const deleteMe = catchAsync(
-  async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  async (req: IDeleteMeRequest, res: Response, next: NextFunction) => {
     await User.findByIdAndUpdate(req.user._id, { active: false });
 
     res.status(204).json({
@@ -79,10 +78,7 @@ export const deleteMe = catchAsync(
 );
 
 export const createUser = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { email }: { email: string } = req.body;
-
-    // const user = await User.findOne({ email });
+  async (req: ICreateUserRequest, res: Response, next: NextFunction) => {
     const user = await User.findOne({
       $or: [{ username: req.body.username }, { email: req.body.email }],
     });
@@ -92,7 +88,6 @@ export const createUser = catchAsync(
       username: req.body.username,
       email: req.body.email,
       password: req.body.password,
-      passwordConfirm: req.body.passwordConfirm,
       role: req.body.role,
       passwordChangedAt: req.body.passwordChangedAt,
     });
@@ -138,7 +133,7 @@ export const getAllUsers = catchAsync(
 );
 
 export const updateUser = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: IUpdateUserRequest, res: Response, next: NextFunction) => {
     const { userId } = req.params;
     const updates = req.body;
 
@@ -161,7 +156,7 @@ export const updateUser = catchAsync(
 );
 
 export const deleteUser = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: IDeleteUserRequest, res: Response, next: NextFunction) => {
     const { userId } = req.params;
     const deletedUser = await User.findByIdAndDelete(userId);
 

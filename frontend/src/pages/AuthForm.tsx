@@ -1,16 +1,14 @@
 import React, { useCallback, useState } from 'react';
 import AuthSocialButton from '@/components/AuthSocialButton';
 import Input from '@/components/inputs/Input';
-import axios from 'axios';
 import { BsGithub, BsGoogle } from 'react-icons/bs';
-import axiosInstance from '@/api/axiosInstance';
+import { signUpUser } from '@/api/users/user.api';
 
 type AuthFormVariant = 'LOGIN' | 'REGISTER';
 
 const AuthForm = () => {
   const [variant, setVariant] = useState<AuthFormVariant>('LOGIN');
   const [isLoading, setIsLoading] = useState(false);
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -25,16 +23,8 @@ const AuthForm = () => {
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    try {
-      const res = await axiosInstance.post('/api/users/signup', {
-        username,
-        email,
-        password,
-        passwordConfirm: confirmPassword,
-      });
-      console.log(res);
-    } catch (error) {
-      console.log('ERROR:', error);
+    if (variant === 'REGISTER') {
+      signUpUser({ username, email, password, confirmPassword });
     }
   };
 
@@ -57,17 +47,6 @@ const AuthForm = () => {
               {variant === 'REGISTER' && <span>Create your account</span>}
             </h1>
             <form onSubmit={submitHandler} className='space-y-4 md:space-y-6'>
-              {variant === 'REGISTER' && (
-                <Input
-                  id='name'
-                  type='text'
-                  label='Name'
-                  placeholder='John'
-                  required={true}
-                  disabled={isLoading}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              )}
               {variant === 'REGISTER' && (
                 <Input
                   id='username'

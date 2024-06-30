@@ -38,6 +38,7 @@ const Input: React.FC<InputProps> = ({
           disabled && 'bg-slate-100 opacity-50 cursor-not-allowed'
         )}
         onChange={onChange}
+        autoComplete={id}
       />
     </div>
   );

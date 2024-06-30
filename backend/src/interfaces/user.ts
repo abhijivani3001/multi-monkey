@@ -6,7 +6,7 @@ export interface IUser {
   role: string;
   photo?: string;
   password: string;
-  passwordConfirm?: string;
+  confirmPassword?: string;
   passwordChangedAt?: Date;
   passwordResetToken?: string;
   passwordResetExpires?: Date;

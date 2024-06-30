@@ -1,4 +1,4 @@
-import { Request as ExpressRequest, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import crypto from 'crypto';
 import User from './../models/userModel';
@@ -6,10 +6,15 @@ import catchAsync from './../utils/catchAsync';
 import { AppError } from '../utils/appError';
 import { sendPasswordResetEmail, sendWelcomeEmail } from './../utils/email';
 import { IUser } from '../interfaces/user';
-
-interface Request extends ExpressRequest {
-  user?: IUser;
-}
+import {
+  IForgetPasswordRequest,
+  ILoginRequest,
+  IProtectRequest,
+  IResetPasswordRequest,
+  IRestrictToRequest,
+  ISignupRequest,
+  IUpdateMyPasswordRequest,
+} from '../interfaces/request/auth.request';
 
 const getEnvVar = (key: string, defaultValue?: string): string => {
   const value = process.env[key];
@@ -54,12 +59,12 @@ const createSendToken = (
 };
 
 export const signup = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: ISignupRequest, res: Response, next: NextFunction) => {
     const newUser: IUser = await User.create({
       username: req.body.username,
       email: req.body.email,
       password: req.body.password,
-      passwordConfirm: req.body.passwordConfirm,
+      confirmPassword: req.body.confirmPassword,
       role: req.body.role,
       passwordChangedAt: req.body.passwordChangedAt,
     });
@@ -72,7 +77,7 @@ export const signup = catchAsync(
 );
 
 export const login = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: ILoginRequest, res: Response, next: NextFunction) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -123,7 +128,7 @@ const verifyToken = (token: string): Promise<JwtPayload> => {
 };
 
 export const protect = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: IProtectRequest, res: Response, next: NextFunction) => {
     const token = extractToken(req);
 
     if (!token) {
@@ -184,7 +189,7 @@ export const isLoggedIn = async (
 };
 
 export const restrictTo = (...roles: string[]) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: IRestrictToRequest, res: Response, next: NextFunction) => {
     if (!req.user || !roles.includes(req.user.role)) {
       return next(
         new AppError('You do not have permission to perform this action', 403)
@@ -196,7 +201,7 @@ export const restrictTo = (...roles: string[]) => {
 };
 
 export const forgotPassword = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: IForgetPasswordRequest, res: Response, next: NextFunction) => {
     const user: IUser | null = await User.findOne({ email: req.body.email });
     if (!user) {
       return next(new AppError('There is no user with email address.', 404));
@@ -231,7 +236,7 @@ export const forgotPassword = catchAsync(
 );
 
 export const resetPassword = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: IResetPasswordRequest, res: Response, next: NextFunction) => {
     const hashedToken = crypto
       .createHash('sha256')
       .update(req.params.token)
@@ -246,7 +251,7 @@ export const resetPassword = catchAsync(
       return next(new AppError('Token is invalid or has expired', 400));
     }
     user.password = req.body.password;
-    user.passwordConfirm = req.body.passwordConfirm;
+    user.confirmPassword = req.body.confirmPassword;
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
     await user.save();
@@ -255,21 +260,21 @@ export const resetPassword = catchAsync(
   }
 );
 
-export const updatePassword = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+export const updateMyPassword = catchAsync(
+  async (req: IUpdateMyPasswordRequest, res: Response, next: NextFunction) => {
     const user: IUser | null = await User.findById(req.user?._id).select(
       '+password'
     );
 
     if (
       !user ||
-      !(await user.correctPassword(req.body.passwordCurrent, user.password))
+      !(await user.correctPassword(req.body.currentPassword, user.password))
     ) {
       return next(new AppError('Your current password is wrong.', 401));
     }
 
     user.password = req.body.password;
-    user.passwordConfirm = req.body.passwordConfirm;
+    user.confirmPassword = req.body.confirmPassword;
     await user.save();
     createSendToken(user, 200, req, res);
   }
