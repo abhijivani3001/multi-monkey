@@ -34,7 +34,7 @@ const Input: React.FC<InputProps> = ({
         placeholder={placeholder}
         required={required}
         className={clsx(
-          `border sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-4 py-2.5 bg-slate-700 border-slate-600 placeholder-slate-400 text-slate-100 focus:ring-0 focus:outline-none`,
+          `border sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-4 py-2.5 bg-slate-700 border-slate-600 placeholder-slate-400 text-slate-100 focus:ring-0 focus:outline-none autofill-text autofill-bg caret-white`,
           disabled && 'bg-slate-100 opacity-50 cursor-not-allowed'
         )}
         onChange={onChange}

@@ -6,7 +6,7 @@ import Home from './pages/Home';
 import Navbar from './components/navbar/Navbar';
 
 function App() {
-  const isLoggedIn: boolean = true;
+  const isLoggedIn: boolean = false;
 
   return (
     <>

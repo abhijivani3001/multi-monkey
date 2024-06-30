@@ -1,8 +1,9 @@
+import React, { useCallback, useState } from 'react';
 import AuthSocialButton from '@/components/AuthSocialButton';
 import Input from '@/components/inputs/Input';
 import axios from 'axios';
-import { useCallback, useState } from 'react';
 import { BsGithub, BsGoogle } from 'react-icons/bs';
+import axiosInstance from '@/api/axiosInstance';
 
 type AuthFormVariant = 'LOGIN' | 'REGISTER';
 
@@ -21,14 +22,15 @@ const AuthForm = () => {
     );
   }, [setVariant]);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const submitHandler = async (e: any) => {
+  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      const res = await axios.post('/api/auth/register', {
+      const res = await axiosInstance.post('/api/users/signup', {
+        username,
         email,
         password,
+        passwordConfirm: confirmPassword,
       });
       console.log(res);
     } catch (error) {

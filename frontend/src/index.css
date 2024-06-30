@@ -98,3 +98,15 @@
     @apply text-slate-300 h-[80vh] text-xl flex items-center justify-center;
   }
 }
+
+@layer components {
+  .autofill-bg {
+    /* overrides bg color of input tag for auto filled values */
+    @apply autofill:shadow-[inset_0_0_0px_1000px_#334155];
+  }
+
+  .autofill-text:-webkit-autofill {
+    /* overrides text color of input tag for auto filled values */
+    -webkit-text-fill-color: #f1f5f9;
+  }
+}
