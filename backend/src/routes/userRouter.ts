@@ -44,4 +44,4 @@ router.route('/').post(createUser).get(getAllUsers);
 
 router.route('/:userId').get(getUser).patch(updateUser).delete(deleteUser);
 
-export default router;f
+export default router;
