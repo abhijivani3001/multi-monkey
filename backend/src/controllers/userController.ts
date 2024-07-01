@@ -10,6 +10,10 @@ import {
   IUpdateMeRequest,
   IUpdateUserRequest,
 } from '../interfaces/request/user.request';
+import {
+  IGetAllUsersResponse,
+  IUserResponse,
+} from '../interfaces/response/user.response';
 
 const filterObj = (obj: { [x: string]: any }, ...allowedFields: string[]) => {
   const newObj: { [key: string]: any } = {};
@@ -57,12 +61,15 @@ export const updateMe = catchAsync(
       }
     );
 
-    res.status(200).json({
-      status: 'Success',
+    const updatedUserResponse: IUserResponse = {
+      success: true,
+      message: 'User updated successfully',
       data: {
         user: updatedUser,
       },
-    });
+    };
+
+    res.status(200).json(updatedUserResponse);
   }
 );
 
@@ -70,10 +77,15 @@ export const deleteMe = catchAsync(
   async (req: IDeleteMeRequest, res: Response, next: NextFunction) => {
     await User.findByIdAndUpdate(req.user._id, { active: false });
 
-    res.status(204).json({
-      status: 'Success',
-      data: null,
-    });
+    const deletedUserResponse: IUserResponse = {
+      success: true,
+      message: 'User deleted successfully',
+      data: {
+        user: null,
+      },
+    };
+
+    res.status(204).json(deletedUserResponse);
   }
 );
 
@@ -92,12 +104,15 @@ export const createUser = catchAsync(
       passwordChangedAt: req.body.passwordChangedAt,
     });
 
-    res.status(200).json({
-      status: 'Success',
+    const createUserResponse: IUserResponse = {
+      success: true,
+      message: 'User created successfully',
       data: {
         user: newUser,
       },
-    });
+    };
+
+    res.status(200).json(createUserResponse);
   }
 );
 
@@ -110,12 +125,15 @@ export const getUser = catchAsync(
       throw new AppError('User not found!', 404);
     }
 
-    res.status(200).json({
-      status: 'Success',
+    const getUserResponse: IUserResponse = {
+      success: true,
+      message: 'User retrieved successfully',
       data: {
         user,
       },
-    });
+    };
+
+    res.status(200).json(getUserResponse);
   }
 );
 
@@ -123,12 +141,15 @@ export const getAllUsers = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const users = await User.find();
 
-    res.status(200).json({
-      status: 'Success',
+    const getAllUsersResponse: IGetAllUsersResponse = {
+      success: true,
+      message: 'Users retrieved successfully',
       data: {
         users,
       },
-    });
+    };
+
+    res.status(200).json(getAllUsersResponse);
   }
 );
 
@@ -146,12 +167,15 @@ export const updateUser = catchAsync(
       throw new AppError('User not found!', 404);
     }
 
-    res.status(200).json({
-      status: 'Success',
+    const updateUserResponse: IUserResponse = {
+      success: true,
+      message: 'User updated successfully',
       data: {
         user: updatedUser,
       },
-    });
+    };
+
+    res.status(200).json(updateUserResponse);
   }
 );
 
@@ -164,9 +188,14 @@ export const deleteUser = catchAsync(
       throw new AppError('User not found!', 404);
     }
 
-    res.status(200).json({
-      status: 'Success',
+    const deleteUserResponse: IUserResponse = {
+      success: true,
       message: 'User deleted successfully',
-    });
+      data: {
+        user: null,
+      },
+    };
+
+    res.status(200).json(deleteUserResponse);
   }
 );

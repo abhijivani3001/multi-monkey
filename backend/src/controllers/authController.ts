@@ -15,6 +15,8 @@ import {
   ISignupRequest,
   IUpdateMyPasswordRequest,
 } from '../interfaces/request/auth.request';
+import { ICreateSendTokenResponse } from '../interfaces/response/auth.response';
+import { PlainResponse } from '../interfaces/response/plain.response';
 
 const getEnvVar = (key: string, defaultValue?: string): string => {
   const value = process.env[key];
@@ -49,13 +51,16 @@ const createSendToken = (
 
   res.cookie('jwt', token, cookieOptions);
 
-  res.status(statusCode).json({
-    status: 'Success',
+  const createSendTokenResponse: ICreateSendTokenResponse = {
+    success: true,
+    message: 'Token sent successfully',
     token,
     data: {
       user,
     },
-  });
+  };
+
+  res.status(statusCode).json(createSendTokenResponse);
 };
 
 export const signup = catchAsync(
@@ -101,7 +106,13 @@ export const logout = (req: Request, res: Response): void => {
     expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true,
   });
-  res.status(200).json({ status: 'Success' });
+
+  const logoutResponse: PlainResponse = {
+    success: true,
+    message: 'Logged out successfully',
+  };
+
+  res.status(200).json(logoutResponse);
 };
 
 const extractToken = (req: Request): string | undefined => {
@@ -216,10 +227,12 @@ export const forgotPassword = catchAsync(
       )}/api/users/resetPassword/${resetToken}`;
       await sendPasswordResetEmail(user, resetURL);
 
-      res.status(200).json({
-        status: 'Success',
+      const forgotPasswordResponse: PlainResponse = {
+        success: true,
         message: 'Token sent to email!',
-      });
+      };
+
+      res.status(200).json(forgotPasswordResponse);
     } catch (err) {
       user.passwordResetToken = undefined;
       user.passwordResetExpires = undefined;
