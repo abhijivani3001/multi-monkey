@@ -14,18 +14,16 @@ interface ValidationError extends Error {
   errors: { [key: string]: { message: string } };
 }
 
-interface JWTError extends Error {}
-
 interface CustomError extends Error {
-  statusCode?: number;
-  status?: string;
-  isOperational?: boolean;
+  statusCode: number;
+  isOperational: boolean;
   code?: number;
   message: string;
   errors?: { [key: string]: { message: string } };
   path?: string;
-  value?: string;
   name: string;
+  field: string | null;
+  value: string | null;
 }
 
 const handleCastErrorDB = (err: CastError) => {
@@ -34,9 +32,26 @@ const handleCastErrorDB = (err: CastError) => {
 };
 
 const handleDuplicateFieldsDB = (err: DuplicateFieldsError) => {
-  const value = err.message.match(/(["'])(\\?.)*?\1/)?.[0];
-  const message = `Duplicate field value: ${value}. Please use another value!`;
-  return new AppError(message, 400);
+  // const value = err.message.match(/(["'])(\\?.)*?\1/)?.[0];
+  let field: string | null = null;
+  let value: string | null = null;
+
+  const fieldMatch = err.message.match(/index: (.+?)_1/) ?? null;
+  const valueMatch = err.message.match(/dup key: \{ \w+: "(.*?)" \}/) ?? null;
+
+  if (fieldMatch) {
+    field = fieldMatch[1] ?? null;
+  }
+  if (valueMatch) {
+    value = valueMatch[1] ?? null;
+  }
+  console.log(field, value);
+
+  const message = `User is already registered${
+    field && value ? ` with this ${field}: ${value}` : ''
+  }`;
+
+  return new AppError(message, 400, field, value);
 };
 
 const handleValidationErrorDB = (err: ValidationError) => {
@@ -54,18 +69,12 @@ const handleJWTExpiredError = () =>
 const sendErrorDev = (err: CustomError, req: Request, res: Response) => {
   // A) API
   if (req.originalUrl.startsWith('/api')) {
-    return res.status(err.statusCode || 500).json({
-      success: false,
-      message: err.message,
-    });
+    return res.status(err.statusCode || 500).json(err);
   }
 
   // B) RENDERED WEBSITE
   console.error('ERROR 💥', err);
-  return res.status(err.statusCode || 500).json({
-    success: false,
-    message: err.message,
-  });
+  return res.status(err.statusCode || 500).json(err);
 };
 
 const sendErrorProd = (err: CustomError, req: Request, res: Response) => {
@@ -76,6 +85,8 @@ const sendErrorProd = (err: CustomError, req: Request, res: Response) => {
       return res.status(err.statusCode || 500).json({
         success: false,
         message: err.message,
+        field: err.field,
+        value: err.value,
       });
     }
     // B) Programming or other unknown error: don't leak error details
@@ -93,7 +104,9 @@ const sendErrorProd = (err: CustomError, req: Request, res: Response) => {
   if (err.isOperational) {
     return res.status(err.statusCode || 500).json({
       success: false,
-      message: `Something went wrong! ${err.message}`,
+      message: err.message,
+      field: err.field,
+      value: err.value,
     });
   }
   // B) Programming or other unknown error: don't leak error details
@@ -113,7 +126,6 @@ export default (
   next: NextFunction
 ) => {
   err.statusCode = err.statusCode || 500;
-  err.status = err.status || 'error';
 
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, req, res);
