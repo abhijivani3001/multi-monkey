@@ -10,12 +10,12 @@ const Navbar = () => {
         >
           <img
             src='/logos/logo-base-1200x1200.png'
-            className='h-8 w-8 md:h-12 md:w-12 object-contain'
+            className='h-10 w-10 md:h-12 md:w-12 object-contain'
           />
-          <span className='hidden md:block self-center text-3xl my-auto font-semibold whitespace-nowrap'>
-            <span className='text-white'>Multi</span>
-            <span className='bg-gradient-to-r from-blue-400 to-sky-300 bg-clip-text text-transparent'>
-              Monkey
+          <span className='hidden md:block font-poppins self-center text-3xl md:text-4xl my-auto font-semibold whitespace-nowrap'>
+            <span className='text-white'>multi</span>
+            <span className='bg-gradient-to-r from-blue-300 to-sky-300 bg-clip-text text-transparent'>
+              monkey
             </span>
           </span>
         </Link>

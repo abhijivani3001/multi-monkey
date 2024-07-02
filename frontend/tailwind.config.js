@@ -81,6 +81,7 @@ export default {
       },
       fontFamily: {
         roboto: ['Roboto Mono', 'monospace'],
+        poppins: ['Poppins', 'sans-serif'],
       },
     },
   },

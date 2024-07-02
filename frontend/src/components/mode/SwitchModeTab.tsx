@@ -19,7 +19,7 @@ const SwitchModeTab = () => {
       <div className='min-h-20 flex justify-center items-center'>
         {!isTyping && (
           <div className='my-4 bg-slate-900 text-slate-500 w-fit mx-auto px-6 py-2 rounded-lg shadow-md'>
-            <div className='hidden md:flex justify-center items-center gap-6'>
+            <div className='hidden lg:flex justify-center items-center gap-6'>
               {/* difficulty */}
               <div className='flex justify-center items-center gap-6'>
                 <button className='btn2'>
@@ -131,7 +131,7 @@ const SwitchModeTab = () => {
               </div>
             </div>
 
-            <div className='md:hidden'>
+            <div className='lg:hidden'>
               <div>
                 <button className='btn2'>Test settings</button>
               </div>
