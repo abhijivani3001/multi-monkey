@@ -3,8 +3,8 @@ import VerticalDivider from '../divider/VerticalDivider';
 import { RxLetterCaseCapitalize } from 'react-icons/rx';
 import { FaQuoteLeft } from 'react-icons/fa';
 import { AtSign, Hash } from 'lucide-react';
-import { useTypingModeContext } from '@/context/TypingModeContext';
-import { useIsTypingContext } from '@/context/IsTypingContext';
+import { useTypingModeContext } from '@/context/TypingMode/TypingModeContext';
+import { useIsTypingContext } from '@/context/IsTyping/IsTypingContext';
 
 const SwitchModeTab = () => {
   const { typingMode, setTypingMode } = useTypingModeContext();

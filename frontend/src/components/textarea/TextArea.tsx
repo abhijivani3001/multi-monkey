@@ -7,8 +7,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../ui/tooltip';
-import { useTypingModeContext } from '@/context/TypingModeContext';
-import { useIsTypingContext } from '@/context/IsTypingContext';
+import { useTypingModeContext } from '@/context/TypingMode/TypingModeContext';
+import { useIsTypingContext } from '@/context/IsTyping/IsTypingContext';
 
 const TextArea = () => {
   const { typingMode } = useTypingModeContext();
