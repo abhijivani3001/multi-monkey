@@ -1,10 +1,11 @@
 import dotenv from 'dotenv';
 import connectDB from './config/dbConfig';
 import app from './app';
+import getEnvVar from './utils/getEnvVar';
 
 dotenv.config();
 
-const PORT = process.env.PORT || 8000;
+const PORT = getEnvVar('PORT', '8000');
 
 connectDB(); // db connection
 

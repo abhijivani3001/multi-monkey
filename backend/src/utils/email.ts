@@ -1,17 +1,18 @@
 import nodemailer, { Transporter } from 'nodemailer';
 import { IUser } from '../interfaces/user';
 import { IEmailOptions } from '../interfaces/email';
+import getEnvVar from './getEnvVar';
 
 // create a transporter
 const createTransport = (): Transporter<any> => {
   return nodemailer.createTransport({
     service: 'gmail',
     secure: true,
-    host: process.env.EMAIL_HOST!,
-    port: Number(process.env.EMAIL_PORT!),
+    host: getEnvVar('EMAIL_HOST')!,
+    port: Number(getEnvVar('EMAIL_PORT')!),
     auth: {
-      user: process.env.EMAIL_USERNAME!,
-      pass: process.env.EMAIL_PASSWORD!,
+      user: getEnvVar('EMAIL_USERNAME')!,
+      pass: getEnvVar('EMAIL_PASSWORD')!,
     },
   });
 };
@@ -40,7 +41,7 @@ export const sendWelcomeEmail = async (
   `;
 
   await sendEmail({
-    from: process.env.EMAIL_FROM!,
+    from: getEnvVar('EMAIL_FROM')!,
     to: user.email,
     subject: 'Welcome to the Multi Monkey!',
     html,
@@ -60,9 +61,9 @@ export const sendPasswordResetEmail = async (
       <a href="${url}">Reset Password</a>
     </div>
   `;
-  
+
   await sendEmail({
-    from: process.env.EMAIL_FROM!,
+    from: getEnvVar('EMAIL_FROM')!,
     to: user.email,
     subject: 'Your password reset token (valid for only 10 minutes)',
     html,

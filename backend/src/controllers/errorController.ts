@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../utils/appError';
+import getEnvVar from '../utils/getEnvVar';
 
 interface CastError extends Error {
   path: string;
@@ -127,9 +128,9 @@ export default (
 ) => {
   err.statusCode = err.statusCode || 500;
 
-  if (process.env.NODE_ENV === 'development') {
+  if (getEnvVar('NODE_ENV') === 'development') {
     sendErrorDev(err, req, res);
-  } else if (process.env.NODE_ENV === 'production') {
+  } else if (getEnvVar('NODE_ENV') === 'production') {
     let error = { ...err };
     error.message = err.message;
 

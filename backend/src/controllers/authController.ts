@@ -17,14 +17,7 @@ import {
 } from '../interfaces/request/auth.request';
 import { ICreateSendTokenResponse } from '../interfaces/response/auth.response';
 import { PlainResponse } from '../interfaces/response/plain.response';
-
-const getEnvVar = (key: string, defaultValue?: string): string => {
-  const value = process.env[key];
-  if (!value && defaultValue === undefined) {
-    throw new Error(`Missing environment variable: ${key}`);
-  }
-  return value || defaultValue!;
-};
+import getEnvVar from '../utils/getEnvVar';
 
 const signToken = (id: string): string => {
   return jwt.sign({ id }, getEnvVar('JWT_SECRET'), {
@@ -74,7 +67,7 @@ export const signup = catchAsync(
       passwordChangedAt: req.body.passwordChangedAt,
     });
 
-    const url = `${req.protocol}://${req.get('host')}/me`;
+    const url = `${getEnvVar('EMAIL_SEND_URL')}`;
     await sendWelcomeEmail(newUser, url);
 
     createSendToken(newUser, 201, req, res);

@@ -1,11 +1,12 @@
 import mongoose from 'mongoose';
+import getEnvVar from '../utils/getEnvVar';
 
 const connectDB = async (): Promise<void> => {
   try {
     const mongoUrl =
-      process.env.MONGO_URL?.replace(
+      getEnvVar('MONGO_URL').replace(
         /<PASSWORD>/,
-        process.env.MONGO_PASSWORD ?? ''
+        getEnvVar('MONGO_PASSWORD')
       ) ?? '';
 
     await mongoose.connect(mongoUrl);
