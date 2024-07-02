@@ -1,3 +1,4 @@
+import { LogOut, User2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {
@@ -24,9 +25,11 @@ const Navbar = () => {
             to={'/profile'}
             className='relative w-full hover:text-slate-100'
           >
-            username
+            <User2 className='h-6 w-6' />
           </Link>
-          <div className='relative w-full'>logout</div>
+          <Link to={'/login'} className='relative w-full hover:text-slate-100'>
+            <LogOut className='h-6 w-6' />
+          </Link>
         </div>
       </div>
     </nav>

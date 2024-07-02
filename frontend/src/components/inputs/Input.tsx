@@ -27,10 +27,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
   ) => {
     return (
       <div>
-        <label
-          htmlFor={id}
-          className='block mb-2 text-sm font-medium text-slate-100'
-        >
+        <label htmlFor={id} className='block mb-2 font-medium text-slate-100'>
           {label}
         </label>
         <input
@@ -42,7 +39,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           placeholder={placeholder}
           required={required}
           className={clsx(
-            'border sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-4 py-2.5 bg-slate-700 border-slate-600 placeholder-slate-400 text-slate-100 focus:ring-0 focus:outline-none autofill-text autofill-bg caret-white',
+            'border sm:text-sm rounded-lg block w-full px-4 py-2.5 bg-slate-700 border-slate-600 placeholder-slate-400 text-slate-100 focus:ring-0 focus:outline-none autofill-text autofill-bg caret-white',
             disabled && 'bg-slate-100 opacity-50 cursor-not-allowed'
           )}
           onChange={onChange}

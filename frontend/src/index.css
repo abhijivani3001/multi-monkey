@@ -96,7 +96,7 @@
     @apply flex justify-center items-center gap-2 hover:text-slate-100 transition focus:outline-none;
   }
   .error-msg {
-    @apply text-slate-300 h-[80vh] text-xl flex items-center justify-center;
+    @apply text-slate-300 h-[75vh] text-xl flex flex-col gap-6 items-center justify-center;
   }
 }
 

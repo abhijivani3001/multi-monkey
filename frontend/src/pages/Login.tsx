@@ -1,6 +1,7 @@
 import AuthSocialButton from '@/components/AuthSocialButton';
 import Input from '@/components/inputs/Input';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { LogIn as LogInIcon } from 'lucide-react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { BsGithub, BsGoogle } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
@@ -43,21 +44,13 @@ const Login = () => {
 
   return (
     <>
-      <div className='flex flex-col items-center justify-center px-6 pt-2 pb-6 mx-auto'>
-        <div className='flex items-center mb-4 text-2xl font-semibold text-slate-100'>
-          <img
-            className='w-10 h-10 mr-2'
-            src='/logos/logo-base-1200x1200.png'
-            alt='logo'
-          />
+      <div className='flex flex-col items-center justify-center px-6 pt-4 pb-6 mx-auto'>
+        <div className='flex items-center gap-3 mb-4 text-xl md:text-2xl font-semibold text-slate-100'>
+          <LogInIcon className='h-5 w-5 md:h-6 md:w-6' strokeWidth='2.5' />
           <span>Login</span>
         </div>
         <div className='w-full rounded-lg shadow-xl border md:mt-0 sm:max-w-lg xl:p-0 bg-slate-900 border-slate-700'>
           <div className='p-6 space-y-4 md:space-y-6 sm:p-8'>
-            <h1 className='text-xl font-bold leading-tight tracking-tight md:text-2xl text-slate-100'>
-              <span>Sign in to your account</span>
-            </h1>
-
             <form
               onSubmit={handleSubmit(onSubmit)}
               className='space-y-4 md:space-y-6'
