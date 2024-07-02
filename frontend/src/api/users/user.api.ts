@@ -16,6 +16,6 @@ export const signUpUser = async ({
     });
     console.log(res);
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    console.error(error.response.data);
   }
 };

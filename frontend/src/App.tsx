@@ -1,23 +1,26 @@
 import { Route, Routes } from 'react-router-dom';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
-import AuthForm from './pages/AuthForm';
 import Home from './pages/Home';
 import Navbar from './components/navbar/Navbar';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 
 function App() {
   const isLoggedIn: boolean = false;
 
   return (
     <>
-      {isLoggedIn && <Navbar />}
+      <Navbar />
       <Routes>
-        {isLoggedIn ? (
-          <Route path='/' element={<Home />} />
-        ) : (
-          <Route path='/' element={<AuthForm />} />
+        <Route path='/' element={<Home />} />
+        {!isLoggedIn && (
+          <>
+            <Route path='/login' element={<Login />} />
+            <Route path='/signup' element={<Signup />} />
+          </>
         )}
-        <Route path='/profile' element={<Profile />} />
+        {isLoggedIn && <Route path='/profile' element={<Profile />} />}
         <Route path='/*' element={<NotFound />} />
       </Routes>
     </>
