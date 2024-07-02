@@ -1,7 +1,13 @@
+import { signupUser } from '@/api/users/user.api';
 import Input from '@/components/inputs/Input';
+import {
+  ISignupUserError,
+  ISignupUserResponse,
+} from '@/interfaces/response/user.response';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { UserRoundPlus } from 'lucide-react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { z } from 'zod';
 
@@ -48,15 +54,31 @@ const Signup = () => {
   });
 
   const onSubmit: SubmitHandler<SignupForm> = async (data) => {
-    try {
-      console.log(data);
-      // Simulate an error if needed
-      // throw new Error();
-    } catch (error) {
-      setError('username', {
-        type: 'manual',
-        message: 'Username is already taken',
-      });
+    const res: ISignupUserResponse = await signupUser({
+      username: data.username,
+      email: data.email,
+      password: data.password,
+      confirmPassword: data.confirmPassword,
+    });
+
+    if (res.success) {
+      toast.success('User signed up successfully');
+    } else {
+      const { field, value, message } = res as ISignupUserError;
+
+      if (
+        field &&
+        value &&
+        ['username', 'email', 'password', 'confirmPassword'].includes(
+          field as keyof SignupForm
+        )
+      ) {
+        setError(field as keyof SignupForm, {
+          type: 'manual',
+          message: message,
+        });
+      }
+      toast.error(message);
     }
   };
 
@@ -124,7 +146,7 @@ const Signup = () => {
             <button
               type='submit'
               disabled={isSubmitting}
-              className='btn w-full'
+              className={`${isSubmitting ? 'btn-disabled' : 'btn'} w-full`}
             >
               {isSubmitting ? 'Loading...' : 'Sign up'}
             </button>

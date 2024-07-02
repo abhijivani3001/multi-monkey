@@ -105,8 +105,12 @@ const Login = () => {
                   Forgot password?
                 </a>
               </div>
-              <button type='submit' className='btn w-full'>
-                Login
+              <button
+                type='submit'
+                disabled={isSubmitting}
+                className={`${isSubmitting ? 'btn-disabled' : 'btn'} w-full`}
+              >
+                {isSubmitting ? 'Loading...' : 'Login'}
               </button>
 
               {/* google auth */}

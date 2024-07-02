@@ -407,7 +407,6 @@ const TextArea = () => {
 
   useEffect(() => {
     generateWords();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

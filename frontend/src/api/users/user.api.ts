@@ -1,21 +1,26 @@
 import { ISignupUserRequest } from '@/interfaces/request/user.request';
 import axiosInstance from '../axiosInstance';
+import { ISignupUserResponse } from '@/interfaces/response/user.response';
 
-export const signUpUser = async ({
+export const signupUser = async ({
   username,
   email,
   password,
   confirmPassword,
 }: ISignupUserRequest) => {
   try {
-    const res = await axiosInstance.post('/api/users/signup', {
-      username,
-      email,
-      password,
-      confirmPassword,
-    });
-    console.log(res);
+    const res: ISignupUserResponse = await axiosInstance.post(
+      '/api/users/signup',
+      {
+        username,
+        email,
+        password,
+        confirmPassword,
+      }
+    );
+    return res.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    console.error(error.response.data);
+    return error.response.data;
   }
 };

@@ -95,6 +95,10 @@
     /* for <icon + text> button */
     @apply flex justify-center items-center gap-2 hover:text-slate-100 transition focus:outline-none;
   }
+  .btn-disabled {
+    /* disabled button */
+    @apply px-4 py-2 rounded-md font-medium bg-gray-600 text-slate-200 opacity-50 cursor-not-allowed;
+  }
   .error-msg {
     @apply text-slate-300 h-[75vh] text-xl flex flex-col gap-6 items-center justify-center;
   }
