@@ -17,4 +17,5 @@ export interface IUser {
   changedPasswordAfter(JWTTimestamp: number): boolean;
   createPasswordResetToken(): string;
   active?: boolean;
+  verified: boolean;
 }

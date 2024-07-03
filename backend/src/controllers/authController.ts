@@ -18,6 +18,7 @@ import {
 import { ICreateSendTokenResponse } from '../interfaces/response/auth.response';
 import { PlainResponse } from '../interfaces/response/plain.response';
 import getEnvVar from '../utils/getEnvVar';
+import Token from '../models/tokenModel';
 
 const signToken = (id: string): string => {
   return jwt.sign({ id }, getEnvVar('JWT_SECRET'), {
@@ -30,7 +31,7 @@ const createSendToken = (
   statusCode: number,
   req: Request,
   res: Response
-): void => {
+): ICreateSendTokenResponse => {
   const token = signToken(user._id);
 
   const cookieOptions = {
@@ -54,10 +55,13 @@ const createSendToken = (
   };
 
   res.status(statusCode).json(createSendTokenResponse);
+  return createSendTokenResponse;
 };
 
 export const signup = catchAsync(
   async (req: ISignupRequest, res: Response, next: NextFunction) => {
+    console.log(req.protocol, req.get('host'));
+
     const newUser: IUser = await User.create({
       username: req.body.username,
       email: req.body.email,
@@ -67,10 +71,21 @@ export const signup = catchAsync(
       passwordChangedAt: req.body.passwordChangedAt,
     });
 
-    const url = `${getEnvVar('EMAIL_SEND_URL')}`;
-    await sendWelcomeEmail(newUser, url);
+    const createSendTokenResponse = createSendToken(newUser, 201, req, res);
 
-    createSendToken(newUser, 201, req, res);
+    const token = await Token.create({
+      user: newUser._id,
+      token: createSendTokenResponse.token,
+      expires: new Date(
+        Date.now() +
+          parseInt(getEnvVar('JWT_COOKIE_EXPIRES_IN')) * 24 * 60 * 60 * 1000
+      ),
+    });
+
+    const url = `${getEnvVar('CLIENT_URL')}/api/users/${newUser._id}/verify/${
+      createSendTokenResponse.token
+    }`;
+    await sendWelcomeEmail(newUser, url);
   }
 );
 

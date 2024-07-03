@@ -8,6 +8,7 @@ import {
   getUser,
   updateMe,
   updateUser,
+  verifyEmail,
 } from './../controllers/userController';
 import {
   forgotPassword,
@@ -23,6 +24,7 @@ import {
 const router = express.Router();
 
 router.post('/signup', signup);
+router.get('/:userId/verify/:token', verifyEmail);
 router.post('/login', login);
 router.post('/logout', logout);
 

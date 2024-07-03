@@ -6,6 +6,7 @@ import Navbar from './components/navbar/Navbar';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ProtectedRoute from './utils/ProtectedRoute';
+import EmailVerify from './pages/EmailVerify';
 
 function App() {
   const user = false;
@@ -40,6 +41,10 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path='/profile' element={<Profile />} />
         </Route>
+        <Route
+          path='/api/users/:userId/verify/:token'
+          element={<EmailVerify />}
+        />
         <Route path='/*' element={<NotFound />} />
       </Routes>
     </>

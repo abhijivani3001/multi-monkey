@@ -62,7 +62,7 @@ const Signup = () => {
     });
 
     if (res.success) {
-      toast.success('User signed up successfully');
+      toast.success('Please check your email to verify your account');
     } else {
       const { field, value, message } = res as ISignupUserError;
 

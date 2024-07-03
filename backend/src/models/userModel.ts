@@ -1,10 +1,10 @@
-import mongoose from 'mongoose';
+import { Schema, model, Query } from 'mongoose';
 import validator from 'validator';
 import { IUser } from '../interfaces/user';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 
-const userSchema = new mongoose.Schema<IUser>({
+const userSchema = new Schema<IUser>({
   username: {
     type: String,
     required: [true, 'Please provide a username'],
@@ -51,6 +51,11 @@ const userSchema = new mongoose.Schema<IUser>({
     default: true,
     select: false,
   },
+  verified: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
 });
 
 userSchema.pre('save', async function (next: () => void) {
@@ -73,7 +78,7 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-userSchema.pre(/^find/, function (this: mongoose.Query<any, any>, next) {
+userSchema.pre(/^find/, function (this: Query<any, any>, next) {
   // we are looking for the strings that starts with 'find' word
   // this points to the current query
   this.find({ active: { $ne: false } });
@@ -116,5 +121,5 @@ userSchema.methods.createPasswordResetToken = function () {
   return resetToken;
 };
 
-const User = mongoose.model<IUser>('User', userSchema);
+const User = model<IUser>('User', userSchema);
 export default User;

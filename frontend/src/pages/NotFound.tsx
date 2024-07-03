@@ -3,14 +3,16 @@ import { useNavigate } from 'react-router-dom';
 const NotFound = () => {
   const navigate = useNavigate();
 
-  const handleHomeClick = () => {
+  const handleNavigateHome = () => {
     navigate('/', { replace: true });
   };
 
   return (
-    <div className='error-msg'>
-      <div className='text-3xl'>404 - Page not found!</div>
-      <button onClick={handleHomeClick} className='btn'>
+    <div className='msg-title'>
+      <div className='text-xl md:text-3xl text-center'>
+        404 - Page not found!
+      </div>
+      <button onClick={handleNavigateHome} className='btn mt-10'>
         Go to Home
       </button>
     </div>

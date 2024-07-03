@@ -12,7 +12,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <AuthProvider>
       <TypingModeProvider>
         <IsTypingProvider>
-          <Toaster />
+          <Toaster
+            toastOptions={{
+              className: 'font-sans',
+            }}
+          />
           <App />
         </IsTypingProvider>
       </TypingModeProvider>

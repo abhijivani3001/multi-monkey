@@ -14,6 +14,7 @@ import {
   IGetAllUsersResponse,
   IUserResponse,
 } from '../interfaces/response/user.response';
+import Token from '../models/tokenModel';
 
 const filterObj = (obj: { [x: string]: any }, ...allowedFields: string[]) => {
   const newObj: { [key: string]: any } = {};
@@ -197,5 +198,34 @@ export const deleteUser = catchAsync(
     };
 
     res.status(200).json(deleteUserResponse);
+  }
+);
+
+export const verifyEmail = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { userId, token } = req.params;
+
+    const user = await User.findById({ _id: userId });
+    if (!user) {
+      throw new AppError('User not found!', 404);
+    }
+
+    const isTokenValid = await Token.findOne({ user: userId, token });
+    if (!isTokenValid) {
+      throw new AppError('Invalid or expired token', 400);
+    }
+
+    await User.findByIdAndUpdate(userId, { verified: true });
+    await Token.findOneAndDelete({ user: userId, token });
+
+    const verifyEmailResponse: IUserResponse = {
+      success: true,
+      message: 'Email verified successfully',
+      data: {
+        user,
+      },
+    };
+
+    res.status(200).json(verifyEmailResponse);
   }
 );
