@@ -1,7 +1,19 @@
+import { useAuthContext } from '@/context/Auth/AuthContext';
 import { LogOut, User2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+  const { setIsAuth } = useAuthContext();
+  const navigate = useNavigate();
+
+  const logoutHandler = () => {
+    localStorage.removeItem('token');
+    setIsAuth(false);
+    navigate('/login', { replace: true });
+    toast.success('Logged out successfully');
+  };
+
   return (
     <nav className='z-30 w-full sticky top-0 backdrop-blur-lg'>
       <div className='max-w-screen-xl flex items-center justify-between mx-auto px-8 py-4 md:p-4 my-auto'>
@@ -27,9 +39,12 @@ const Navbar = () => {
           >
             <User2 className='h-6 w-6' />
           </Link>
-          <Link to={'/login'} className='relative w-full hover:text-slate-100'>
+          <button
+            onClick={logoutHandler}
+            className='relative w-full hover:text-slate-100'
+          >
             <LogOut className='h-6 w-6' />
-          </Link>
+          </button>
         </div>
       </div>
     </nav>

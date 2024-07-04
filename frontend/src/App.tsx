@@ -7,17 +7,20 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ProtectedRoute from './utils/ProtectedRoute';
 import EmailVerify from './pages/EmailVerify';
+import { useAuthContext } from './context/Auth/AuthContext';
 
 function App() {
-  const token = localStorage.getItem('token');
+  const { isAuth, setIsAuth } = useAuthContext();
   const location = useLocation();
+
+  setIsAuth(!!localStorage.getItem('token'));
 
   return (
     <>
       <Navbar />
       <Routes>
         <Route path='/' element={<Home />} />
-        {token ? (
+        {isAuth ? (
           <>
             <Route
               path='/login'

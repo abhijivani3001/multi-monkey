@@ -1,10 +1,11 @@
+import { useAuthContext } from '@/context/Auth/AuthContext';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
 const ProtectedRoute = () => {
   const location = useLocation();
-  const token = localStorage.getItem('token');
+  const { isAuth } = useAuthContext();
 
-  return token ? (
+  return isAuth ? (
     <Outlet />
   ) : (
     <Navigate to='/login' state={{ from: location }} replace />

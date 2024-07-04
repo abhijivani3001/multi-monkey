@@ -1,6 +1,7 @@
 import { loginUser } from '@/api/users/user.api';
 import AuthSocialButton from '@/components/AuthSocialButton';
 import Input from '@/components/inputs/Input';
+import { useAuthContext } from '@/context/Auth/AuthContext';
 import { IUserResponse } from '@/interfaces/response/user.response';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LogIn as LogInIcon } from 'lucide-react';
@@ -26,6 +27,7 @@ type LoginForm = z.infer<typeof schema>;
 
 const Login = () => {
   const navigate = useNavigate();
+  const { setIsAuth } = useAuthContext();
 
   const {
     register,
@@ -46,6 +48,7 @@ const Login = () => {
       if (res.data.user?.verified) {
         localStorage.setItem('token', res.token);
         navigate('/profile', { replace: true });
+        setIsAuth(true);
       }
 
       // clear field values
