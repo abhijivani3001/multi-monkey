@@ -1,10 +1,13 @@
+import { loginUser } from '@/api/users/user.api';
 import AuthSocialButton from '@/components/AuthSocialButton';
 import Input from '@/components/inputs/Input';
+import { IUserResponse } from '@/interfaces/response/user.response';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LogIn as LogInIcon } from 'lucide-react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import { BsGithub, BsGoogle } from 'react-icons/bs';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
 const schema = z.object({
@@ -22,23 +25,35 @@ const schema = z.object({
 type LoginForm = z.infer<typeof schema>;
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm<LoginForm>({
     resolver: zodResolver(schema),
   });
 
   const onSubmit: SubmitHandler<LoginForm> = async (data) => {
-    try {
-      console.log(data);
-    } catch (error) {
-      setError('email', {
-        type: 'manual',
-        message: 'Invalid email or password',
+    const res: IUserResponse = await loginUser({
+      email: data.email,
+      password: data.password,
+    });
+    if (res.success) {
+      toast.success(res.message);
+
+      if (res.data.user?.verified) {
+        localStorage.setItem('token', res.token);
+        navigate('/profile', { replace: true });
+      }
+
+      // clear field values
+      Object.keys(data).forEach((key) => {
+        data[key as keyof LoginForm] = '';
       });
+    } else {
+      toast.error(res.message);
     }
   };
 

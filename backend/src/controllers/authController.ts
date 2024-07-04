@@ -47,21 +47,52 @@ const createSendToken = (
 
   const createSendTokenResponse: ICreateSendTokenResponse = {
     success: true,
-    message: 'Token sent successfully',
+    message: 'Please check your email to verify your account',
     token,
     data: {
       user,
     },
   };
 
-  res.status(statusCode).json(createSendTokenResponse);
   return createSendTokenResponse;
+};
+
+const sendTokenForVerification = async (
+  user: IUser,
+  req: Request,
+  res: Response
+) => {
+  const createSendTokenResponse = createSendToken(user, 201, req, res);
+
+  if (user.verified) {
+    // response: user is verified
+    createSendTokenResponse.message = 'Login successful';
+    return res.status(201).json(createSendTokenResponse);
+  }
+
+  // response: user is not verified
+  res.status(201).json(createSendTokenResponse);
+
+  // remove all previous tokens for that user
+  await Token.deleteMany({ user: user._id });
+
+  const token = await Token.create({
+    user: user._id,
+    token: createSendTokenResponse.token,
+    expires: new Date(
+      Date.now() +
+        parseInt(getEnvVar('JWT_COOKIE_EXPIRES_IN')) * 24 * 60 * 60 * 1000
+    ),
+  });
+
+  const url = `${getEnvVar('CLIENT_URL')}/api/users/${user._id}/verify/${
+    createSendTokenResponse.token
+  }`;
+  await sendWelcomeEmail(user, url);
 };
 
 export const signup = catchAsync(
   async (req: ISignupRequest, res: Response, next: NextFunction) => {
-    console.log(req.protocol, req.get('host'));
-
     const newUser: IUser = await User.create({
       username: req.body.username,
       email: req.body.email,
@@ -71,21 +102,7 @@ export const signup = catchAsync(
       passwordChangedAt: req.body.passwordChangedAt,
     });
 
-    const createSendTokenResponse = createSendToken(newUser, 201, req, res);
-
-    const token = await Token.create({
-      user: newUser._id,
-      token: createSendTokenResponse.token,
-      expires: new Date(
-        Date.now() +
-          parseInt(getEnvVar('JWT_COOKIE_EXPIRES_IN')) * 24 * 60 * 60 * 1000
-      ),
-    });
-
-    const url = `${getEnvVar('CLIENT_URL')}/api/users/${newUser._id}/verify/${
-      createSendTokenResponse.token
-    }`;
-    await sendWelcomeEmail(newUser, url);
+    await sendTokenForVerification(newUser, req, res);
   }
 );
 
@@ -105,7 +122,7 @@ export const login = catchAsync(
       return next(new AppError('Incorrect email or password', 401));
     }
 
-    createSendToken(user, 200, req, res);
+    sendTokenForVerification(user, req, res);
   }
 );
 

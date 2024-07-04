@@ -9,7 +9,7 @@ import ProtectedRoute from './utils/ProtectedRoute';
 import EmailVerify from './pages/EmailVerify';
 
 function App() {
-  const user = false;
+  const token = localStorage.getItem('token');
   const location = useLocation();
 
   return (
@@ -17,7 +17,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path='/' element={<Home />} />
-        {user ? (
+        {token ? (
           <>
             <Route
               path='/login'

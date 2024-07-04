@@ -1,9 +1,6 @@
 import { signupUser } from '@/api/users/user.api';
 import Input from '@/components/inputs/Input';
-import {
-  ISignupUserError,
-  ISignupUserResponse,
-} from '@/interfaces/response/user.response';
+import { IUserError, IUserResponse } from '@/interfaces/response/user.response';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { UserRoundPlus } from 'lucide-react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -54,7 +51,7 @@ const Signup = () => {
   });
 
   const onSubmit: SubmitHandler<SignupForm> = async (data) => {
-    const res: ISignupUserResponse = await signupUser({
+    const res: IUserResponse = await signupUser({
       username: data.username,
       email: data.email,
       password: data.password,
@@ -62,9 +59,14 @@ const Signup = () => {
     });
 
     if (res.success) {
-      toast.success('Please check your email to verify your account');
+      toast.success(res.message);
+
+      // clear field values
+      Object.keys(data).forEach((key) => {
+        data[key as keyof SignupForm] = '';
+      });
     } else {
-      const { field, value, message } = res as ISignupUserError;
+      const { field, value, message } = res as IUserError;
 
       if (
         field &&
