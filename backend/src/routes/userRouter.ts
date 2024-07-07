@@ -20,6 +20,7 @@ import {
   signup,
   updateMyPassword,
 } from '../controllers/authController';
+import { userRoles } from '../constants/roles.constant';
 
 const router = express.Router();
 
@@ -40,7 +41,7 @@ router.patch('/updateMe', updateMe);
 router.delete('/deleteMe', deleteMe);
 
 // ----- Restrict all routes to admin after this middleware -----
-router.use(restrictTo('admin'));
+router.use(restrictTo(userRoles.ADMIN));
 
 router.route('/').post(createUser).get(getAllUsers);
 

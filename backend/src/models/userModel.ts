@@ -3,6 +3,7 @@ import validator from 'validator';
 import { IUser } from '../interfaces/user';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
+import { userRoles } from '../constants/roles.constant';
 
 const userSchema = new Schema<IUser>({
   username: {
@@ -22,8 +23,8 @@ const userSchema = new Schema<IUser>({
   },
   role: {
     type: String,
-    enum: ['user', 'admin'],
-    default: 'user',
+    enum: [userRoles.ADMIN, userRoles.USER],
+    default: userRoles.USER,
   },
   password: {
     type: String,

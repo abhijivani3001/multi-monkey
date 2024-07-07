@@ -19,3 +19,8 @@ export interface IUser {
   active?: boolean;
   verified: boolean;
 }
+
+export interface IUserRoles {
+  readonly ADMIN: string;
+  readonly USER: string;
+}
