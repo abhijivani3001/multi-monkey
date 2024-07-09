@@ -7,7 +7,9 @@ const Navbar = () => {
   const { setIsAuth } = useAuthContext();
   const navigate = useNavigate();
 
-  const logoutHandler = () => {
+  const logoutHandler = async () => {
+    // await account.deleteSession('current');
+
     localStorage.removeItem('token');
     setIsAuth(false);
     navigate('/login', { replace: true });

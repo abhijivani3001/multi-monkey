@@ -1,9 +1,11 @@
 import { loginUser } from '@/api/users/user.api';
 import AuthSocialButton from '@/components/AuthSocialButton';
 import Input from '@/components/inputs/Input';
+import { account } from '@/config/appwrite/appwriteConfig';
 import { useAuthContext } from '@/context/Auth/AuthContext';
 import { IUserResponse } from '@/interfaces/response/user.response';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { OAuthProvider } from 'appwrite';
 import { LogIn as LogInIcon } from 'lucide-react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -58,6 +60,14 @@ const Login = () => {
     } else {
       toast.error(res.message);
     }
+  };
+
+  const handleLoginWithGoogle = async () => {
+    account.createOAuth2Session(
+      OAuthProvider.Google,
+      'http://localhost:5173/profile', // success url
+      'http://localhost:5173/login' // fail url
+    );
   };
 
   return (
@@ -146,7 +156,10 @@ const Login = () => {
 
                 <div className='mt-6 flex gap-2'>
                   <AuthSocialButton icon={BsGithub} onclick={() => {}} />
-                  <AuthSocialButton icon={BsGoogle} onclick={() => {}} />
+                  <AuthSocialButton
+                    icon={BsGoogle}
+                    onclick={handleLoginWithGoogle}
+                  />
                 </div>
               </div>
 
