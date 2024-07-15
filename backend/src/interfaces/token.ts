@@ -1,7 +1,7 @@
-import { Schema } from 'mongoose';
+import { ObjectId } from 'mongoose';
 
 export interface IToken {
-  user: Schema.Types.ObjectId;
+  user: ObjectId;
   token: string;
   expires: Date;
 }

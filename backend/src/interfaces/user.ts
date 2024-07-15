@@ -1,12 +1,13 @@
 export interface IUser {
   save(arg0?: { validateBeforeSave: boolean }): unknown;
   _id: string;
-  username: string;
+  name: string;
   email: string;
   role: string;
   photo?: string;
   password: string;
   confirmPassword?: string;
+  accountType: string;
   passwordChangedAt?: Date;
   passwordResetToken?: string;
   passwordResetExpires?: Date;

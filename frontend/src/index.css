@@ -102,6 +102,10 @@
   .msg-title {
     @apply text-slate-300 h-[75vh] md:text-xl flex flex-col gap-4 items-center justify-center;
   }
+  .error-msg {
+    /* validation error message */
+    @apply text-sm text-rose-500 transition animate-fadeIn;
+  }
 }
 
 @layer components {

@@ -4,6 +4,6 @@ import { PlainResponse } from './plain.response';
 export interface ICreateSendTokenResponse extends PlainResponse {
   token: string;
   data: {
-    user: IUser
-  }
+    user: IUser;
+  };
 }

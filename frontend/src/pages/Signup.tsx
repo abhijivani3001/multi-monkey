@@ -10,11 +10,7 @@ import { z } from 'zod';
 
 const schema = z
   .object({
-    username: z
-      .string()
-      .trim()
-      .min(1, { message: 'Username is required' })
-      .max(255),
+    name: z.string().trim().min(1, { message: 'Name is required' }).max(255),
     email: z
       .string()
       .trim()
@@ -52,7 +48,7 @@ const Signup = () => {
 
   const onSubmit: SubmitHandler<SignupForm> = async (data) => {
     const res: IUserResponse = await signupUser({
-      username: data.username,
+      name: data.name,
       email: data.email,
       password: data.password,
       confirmPassword: data.confirmPassword,
@@ -71,7 +67,7 @@ const Signup = () => {
       if (
         field &&
         value &&
-        ['username', 'email', 'password', 'confirmPassword'].includes(
+        ['name', 'email', 'password', 'confirmPassword'].includes(
           field as keyof SignupForm
         )
       ) {
@@ -94,20 +90,18 @@ const Signup = () => {
         <div className='p-6 space-y-4 md:space-y-6 sm:p-8'>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className='space-y-4 md:space-y-6'
+            className='space-y-2 md:space-y-3'
           >
             <Input
-              {...register('username')}
-              id='username'
+              {...register('name')}
+              id='name'
               type='text'
-              label='Username'
-              placeholder='john123'
+              label='Name'
+              placeholder='John Doe'
             />
-            {errors.username && (
-              <span className='text-sm text-rose-500'>
-                {errors.username.message}
-              </span>
-            )}
+            <span className={`${errors.name ? 'error-msg' : ''}`}>
+              {errors.name ? errors.name.message : <>&nbsp;</>}
+            </span>
             <Input
               {...register('email')}
               id='email'
@@ -115,11 +109,9 @@ const Signup = () => {
               label='Email'
               placeholder='name@company.com'
             />
-            {errors.email && (
-              <span className='text-sm text-rose-500'>
-                {errors.email.message}
-              </span>
-            )}
+            <span className={`${errors.email ? 'error-msg' : ''}`}>
+              {errors.email ? errors.email.message : <>&nbsp;</>}
+            </span>
             <Input
               {...register('password')}
               id='password'
@@ -127,11 +119,9 @@ const Signup = () => {
               label='Password'
               placeholder='••••••••'
             />
-            {errors.password && (
-              <span className='text-sm text-rose-500'>
-                {errors.password.message}
-              </span>
-            )}
+            <span className={`${errors.password ? 'error-msg' : ''}`}>
+              {errors.password ? errors.password.message : <>&nbsp;</>}
+            </span>
             <Input
               {...register('confirmPassword')}
               id='confirmPassword'
@@ -139,11 +129,13 @@ const Signup = () => {
               label='Confirm Password'
               placeholder='••••••••'
             />
-            {errors.confirmPassword && (
-              <span className='text-sm text-rose-500'>
-                {errors.confirmPassword.message}
-              </span>
-            )}
+            <span className={`${errors.confirmPassword ? 'error-msg' : ''}`}>
+              {errors.confirmPassword ? (
+                errors.confirmPassword.message
+              ) : (
+                <>&nbsp;</>
+              )}
+            </span>
 
             <button
               type='submit'

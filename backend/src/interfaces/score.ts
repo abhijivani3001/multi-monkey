@@ -1,7 +1,7 @@
-import { Schema } from 'mongoose';
+import { ObjectId } from 'mongoose';
 
 export interface IScore {
-  userId: Schema.Types.ObjectId;
+  userId: ObjectId;
   rawWpm: number;
   netWpm: number;
   accuracy: number;

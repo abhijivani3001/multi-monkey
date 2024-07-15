@@ -81,7 +81,7 @@ const Login = () => {
           <div className='p-6 space-y-4 md:space-y-6 sm:p-8'>
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className='space-y-4 md:space-y-6'
+              className='space-y-2 md:space-y-3'
             >
               <Input
                 {...register('email')}
@@ -91,11 +91,9 @@ const Login = () => {
                 placeholder='name@company.com'
                 disabled={isSubmitting}
               />
-              {errors.email && (
-                <span className='text-sm text-rose-500'>
-                  {errors.email.message}
-                </span>
-              )}
+              <span className={`${errors.email ? 'error-msg' : ''}`}>
+                {errors.email ? errors.email.message : <>&nbsp;</>}
+              </span>
               <Input
                 {...register('password')}
                 id='password'
@@ -104,11 +102,9 @@ const Login = () => {
                 placeholder='••••••••'
                 disabled={isSubmitting}
               />
-              {errors.password && (
-                <span className='text-sm text-rose-500'>
-                  {errors.password.message}
-                </span>
-              )}
+              <span className={`${errors.password ? 'error-msg' : ''}`}>
+                {errors.password ? errors.password.message : <>&nbsp;</>}
+              </span>
 
               <div className='flex items-center justify-between'>
                 <div className='flex items-start'>

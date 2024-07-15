@@ -4,11 +4,12 @@ import { IUser } from '../interfaces/user';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import { userRoles } from '../constants/roles.constant';
+import { accountType } from '../constants/account.constant';
 
 const userSchema = new Schema<IUser>({
-  username: {
+  name: {
     type: String,
-    required: [true, 'Please provide a username'],
+    required: [true, 'Please provide a name'],
     unique: true,
   },
   email: {
@@ -28,13 +29,13 @@ const userSchema = new Schema<IUser>({
   },
   password: {
     type: String,
-    required: [true, 'Please provide a password'],
+    // required: [true, 'Please provide a password'],
     minlength: 8,
     select: false,
   },
   confirmPassword: {
     type: String,
-    required: [true, 'Please confirm your password'],
+    // required: [true, 'Please confirm your password'],
     minlength: 8,
     validate: {
       validator: function (this: IUser) {
@@ -43,6 +44,11 @@ const userSchema = new Schema<IUser>({
       message: 'Passwords are not the same!',
     },
     select: false,
+  },
+  accountType: {
+    type: String,
+    enum: [accountType.LOCAL, accountType.GOOGLE, accountType.GITHUB],
+    default: accountType.LOCAL,
   },
   passwordChangedAt: Date,
   passwordResetToken: String,

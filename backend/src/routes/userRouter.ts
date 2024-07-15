@@ -27,6 +27,7 @@ const router = express.Router();
 router.post('/signup', signup);
 router.get('/:userId/verify/:token', verifyEmail);
 router.post('/login', login);
+router.post('/googleLogin');
 router.post('/logout', logout);
 
 router.post('/forgotPassword', forgotPassword);

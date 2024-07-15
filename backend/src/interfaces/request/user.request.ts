@@ -23,7 +23,7 @@ export interface IDeleteMeRequest extends Request {
 
 export interface ICreateUserRequest extends Request {
   body: {
-    username: string;
+    name: string;
     email: string;
     password: string;
     confirmPassword: string;
@@ -37,7 +37,7 @@ export interface IUpdateUserRequest extends Request {
     userId: string;
   };
   body: {
-    username: string;
+    name: string;
     email: string;
     role: string;
     photo: string;

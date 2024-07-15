@@ -8,7 +8,8 @@ const Home = () => {
     const fun = async () => {
       try {
         const user = await account.get();
-        console.log(user);
+        const token = await account.getSession('current');
+        console.log(user, token);
       } catch (err) {
         console.log(err);
       }

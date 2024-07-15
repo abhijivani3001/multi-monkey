@@ -4,7 +4,7 @@ export interface ILoginUserRequest {
 }
 
 export interface ISignupUserRequest {
-  username: string;
+  name: string;
   email: string;
   password: string;
   confirmPassword: string;

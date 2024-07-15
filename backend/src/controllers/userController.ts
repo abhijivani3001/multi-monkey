@@ -40,15 +40,13 @@ export const updateMe = catchAsync(
       );
     }
 
-    const filteredBody = filterObj(req.body, 'username', 'email');
+    const filteredBody = filterObj(req.body, 'name', 'email');
 
-    // Check if user with new username or email already exists
-    const userExists = await User.findOne({
-      $or: [{ username: filteredBody.username }, { email: filteredBody.email }],
-    });
+    // Check if user with new email already exists
+    const userExists = await User.findOne({ email: filteredBody.email });
 
     if (userExists && userExists._id.toString() !== req.user._id) {
-      throw new AppError('Username or email already taken', 400);
+      throw new AppError('Email is already taken', 400);
     }
 
     if (req.file) filteredBody.photo = req.file.filename;
@@ -93,12 +91,12 @@ export const deleteMe = catchAsync(
 export const createUser = catchAsync(
   async (req: ICreateUserRequest, res: Response, next: NextFunction) => {
     const user = await User.findOne({
-      $or: [{ username: req.body.username }, { email: req.body.email }],
+      $or: [{ name: req.body.name }, { email: req.body.email }],
     });
     if (user) throw new AppError('User already exists', 400);
 
     const newUser = await User.create({
-      username: req.body.username,
+      name: req.body.name,
       email: req.body.email,
       password: req.body.password,
       role: req.body.role,

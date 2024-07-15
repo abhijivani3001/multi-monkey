@@ -94,7 +94,7 @@ const sendTokenForVerification = async (
 export const signup = catchAsync(
   async (req: ISignupRequest, res: Response, next: NextFunction) => {
     const newUser: IUser = await User.create({
-      username: req.body.username,
+      name: req.body.name,
       email: req.body.email,
       password: req.body.password,
       confirmPassword: req.body.confirmPassword,

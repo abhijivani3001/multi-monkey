@@ -6,14 +6,14 @@ import axiosInstance from '../axiosInstance';
 import { IUserResponse } from '@/interfaces/response/user.response';
 
 export const signupUser = async ({
-  username,
+  name,
   email,
   password,
   confirmPassword,
 }: ISignupUserRequest) => {
   try {
     const res: IUserResponse = await axiosInstance.post('/api/users/signup', {
-      username,
+      name,
       email,
       password,
       confirmPassword,

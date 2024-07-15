@@ -3,7 +3,7 @@ import { IUser } from '../user';
 
 export interface ISignupRequest extends Request {
   body: {
-    username: string;
+    name: string;
     email: string;
     password: string;
     confirmPassword: string;

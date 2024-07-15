@@ -34,7 +34,7 @@ export const sendWelcomeEmail = async (
 ): Promise<void> => {
   const html = `
     <div>
-      <h1>Welcome to the Multi Monkey, ${user.username}!</h1>
+      <h1>Welcome to the Multi Monkey, ${user.name}!</h1>
       <p>We're excited to have you on board. Please visit the following link to get started:</p>
       <a href="${url}">Get Started</a>
     </div>
@@ -56,7 +56,7 @@ export const sendPasswordResetEmail = async (
   const html = `
     <div>
       <h1>Password Reset</h1>
-      <p>Hi ${user.username},</p>
+      <p>Hi ${user.name},</p>
       <p>You requested a password reset. Click the link below to reset your password. This link is valid for 10 minutes.</p>
       <a href="${url}">Reset Password</a>
     </div>
