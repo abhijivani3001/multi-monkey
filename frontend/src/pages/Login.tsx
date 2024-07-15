@@ -1,12 +1,15 @@
+import { loginWithGoogle } from '@/api/oauth/google.auth';
 import { loginUser } from '@/api/users/user.api';
 import AuthSocialButton from '@/components/AuthSocialButton';
 import Input from '@/components/inputs/Input';
 import { account } from '@/config/appwrite/appwriteConfig';
+import { accountType } from '@/constants/account.constant';
 import { useAuthContext } from '@/context/Auth/AuthContext';
 import { IUserResponse } from '@/interfaces/response/user.response';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { OAuthProvider } from 'appwrite';
 import { LogIn as LogInIcon } from 'lucide-react';
+import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { BsGithub, BsGoogle } from 'react-icons/bs';
@@ -68,6 +71,36 @@ const Login = () => {
       'http://localhost:5173/profile', // success url
       'http://localhost:5173/login' // fail url
     );
+
+    const user = await account.get();
+    const session = await account.getSession('current');
+
+    const res = await loginWithGoogle({
+      type: 'oauth',
+      provider: accountType.GOOGLE,
+      providerAccountId: user.$id,
+      providerAccessToken: session.providerAccessToken,
+      expires: session.expire,
+      createdAt: session.$createdAt,
+      updatedAt: session.$updatedAt,
+      name: user.name,
+      email: user.email,
+      photo: user.prefs?.avatar,
+      accountType: accountType.GOOGLE,
+      verified: true,
+    });
+
+    if (res.success) {
+      toast.success(res.message);
+
+      if (res.data.user?.verified) {
+        localStorage.setItem('token', res.data.token);
+        navigate('/profile', { replace: true });
+        setIsAuth(true);
+      }
+    } else {
+      toast.error(res.message);
+    }
   };
 
   return (

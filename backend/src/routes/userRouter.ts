@@ -21,13 +21,14 @@ import {
   updateMyPassword,
 } from '../controllers/authController';
 import { userRoles } from '../constants/roles.constant';
+import { loginWithGoogle } from '../controllers/accountController';
 
 const router = express.Router();
 
 router.post('/signup', signup);
 router.get('/:userId/verify/:token', verifyEmail);
 router.post('/login', login);
-router.post('/googleLogin');
+router.post('/loginWithGoogle', loginWithGoogle);
 router.post('/logout', logout);
 
 router.post('/forgotPassword', forgotPassword);

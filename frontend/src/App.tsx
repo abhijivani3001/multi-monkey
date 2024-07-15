@@ -8,12 +8,15 @@ import Signup from './pages/Signup';
 import ProtectedRoute from './utils/ProtectedRoute';
 import EmailVerify from './pages/EmailVerify';
 import { useAuthContext } from './context/Auth/AuthContext';
+import { useEffect } from 'react';
 
 function App() {
   const { isAuth, setIsAuth } = useAuthContext();
   const location = useLocation();
 
-  setIsAuth(!!localStorage.getItem('token'));
+  useEffect(() => {
+    setIsAuth(!!localStorage.getItem('token'));
+  }, []);
 
   return (
     <>
