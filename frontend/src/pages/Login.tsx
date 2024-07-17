@@ -4,12 +4,11 @@ import AuthSocialButton from '@/components/AuthSocialButton';
 import Input from '@/components/inputs/Input';
 import { account } from '@/config/appwrite/appwriteConfig';
 import { accountType } from '@/constants/account.constant';
-import { useAuthContext } from '@/context/Auth/AuthContext';
 import { IUserResponse } from '@/interfaces/response/user.response';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { OAuthProvider } from 'appwrite';
 import { LogIn as LogInIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { BsGithub, BsGoogle } from 'react-icons/bs';
@@ -32,7 +31,6 @@ type LoginForm = z.infer<typeof schema>;
 
 const Login = () => {
   const navigate = useNavigate();
-  const { setIsAuth } = useAuthContext();
 
   const {
     register,
@@ -53,7 +51,6 @@ const Login = () => {
       if (res.data.user?.verified) {
         localStorage.setItem('token', res.token);
         navigate('/profile', { replace: true });
-        setIsAuth(true);
       }
 
       // clear field values
@@ -65,43 +62,54 @@ const Login = () => {
     }
   };
 
-  const handleLoginWithGoogle = async () => {
-    account.createOAuth2Session(
-      OAuthProvider.Google,
-      'http://localhost:5173/profile', // success url
-      'http://localhost:5173/login' // fail url
-    );
+  const handleLoginWithGoogle = useCallback(
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
 
-    const user = await account.get();
-    const session = await account.getSession('current');
+      account.createOAuth2Session(
+        OAuthProvider.Google,
+        'http://localhost:5173/profile', // success url
+        'http://localhost:5173/login' // fail url
+      );
 
-    const res = await loginWithGoogle({
-      type: 'oauth',
-      provider: accountType.GOOGLE,
-      providerAccountId: user.$id,
-      providerAccessToken: session.providerAccessToken,
-      expires: session.expire,
-      createdAt: session.$createdAt,
-      updatedAt: session.$updatedAt,
-      name: user.name,
-      email: user.email,
-      photo: user.prefs?.avatar,
-      accountType: accountType.GOOGLE,
-      verified: true,
-    });
+      const user = await account.get();
+      const session = await account.getSession('current');
 
-    if (res.success) {
-      toast.success(res.message);
+      const res = await loginWithGoogle({
+        type: 'oauth',
+        provider: accountType.GOOGLE,
+        providerAccountId: user.$id,
+        providerAccessToken: session.providerAccessToken,
+        expires: session.expire,
+        createdAt: session.$createdAt,
+        updatedAt: session.$updatedAt,
+        name: user.name,
+        email: user.email,
+        photo: user.prefs?.avatar,
+        accountType: accountType.GOOGLE,
+        verified: true,
+      });
 
-      if (res.data.user?.verified) {
-        localStorage.setItem('token', res.data.token);
-        navigate('/profile', { replace: true });
-        setIsAuth(true);
+      if (res.success) {
+        toast.success(res.message);
+
+        if (res.data.user?.verified) {
+          localStorage.setItem('token', res.data.token);
+          navigate('/profile', { replace: true });
+        }
+      } else {
+        toast.error(res.message);
       }
-    } else {
-      toast.error(res.message);
-    }
-  };
+    },
+    [navigate]
+  );
+
+  const handleLoginWithGithub = useCallback(
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+    },
+    []
+  );
 
   return (
     <>
@@ -184,10 +192,13 @@ const Login = () => {
                 </div>
 
                 <div className='mt-6 flex gap-2'>
-                  <AuthSocialButton icon={BsGithub} onclick={() => {}} />
+                  <AuthSocialButton
+                    icon={BsGithub}
+                    onClick={handleLoginWithGithub}
+                  />
                   <AuthSocialButton
                     icon={BsGoogle}
-                    onclick={handleLoginWithGoogle}
+                    onClick={handleLoginWithGoogle}
                   />
                 </div>
               </div>
