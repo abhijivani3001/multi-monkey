@@ -94,6 +94,14 @@ const sendTokenForVerification = async (
 
 export const signup = catchAsync(
   async (req: ISignupRequest, res: Response, next: NextFunction) => {
+    const existingUser: IUser | null = await User.findOne({
+      email: req.body.email,
+    });
+
+    if (existingUser) {
+      return next(new AppError('User already exists', 400));
+    }
+
     const newUser: IUser = await User.create({
       name: req.body.name,
       email: req.body.email,
