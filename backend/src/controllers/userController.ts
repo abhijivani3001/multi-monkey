@@ -90,9 +90,7 @@ export const deleteMe = catchAsync(
 
 export const createUser = catchAsync(
   async (req: ICreateUserRequest, res: Response, next: NextFunction) => {
-    const user = await User.findOne({
-      $or: [{ name: req.body.name }, { email: req.body.email }],
-    });
+    const user = await User.findOne({ email: req.body.email });
     if (user) throw new AppError('User already exists', 400);
 
     const newUser = await User.create({

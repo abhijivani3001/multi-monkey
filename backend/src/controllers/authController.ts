@@ -19,6 +19,7 @@ import { ICreateSendTokenResponse } from '../interfaces/response/auth.response';
 import { PlainResponse } from '../interfaces/response/plain.response';
 import getEnvVar from '../utils/getEnvVar';
 import Token from '../models/tokenModel';
+import { userRoles } from '../constants/roles.constant';
 
 const signToken = (id: string): string => {
   return jwt.sign({ id }, getEnvVar('JWT_SECRET'), {
@@ -98,7 +99,7 @@ export const signup = catchAsync(
       email: req.body.email,
       password: req.body.password,
       confirmPassword: req.body.confirmPassword,
-      role: req.body.role,
+      role: req.body.role ?? userRoles.USER,
       passwordChangedAt: req.body.passwordChangedAt,
     });
 
