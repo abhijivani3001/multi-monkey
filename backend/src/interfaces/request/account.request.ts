@@ -1,6 +1,6 @@
 import { Request } from 'express';
 
-export interface ILoginWithGoogleRequest extends Request {
+export interface IOAuthLogin extends Request {
   body: {
     type: string;
     provider: string;

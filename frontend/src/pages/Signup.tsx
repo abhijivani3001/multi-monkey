@@ -90,70 +90,74 @@ const Signup = () => {
         <div className='p-6 space-y-4 md:space-y-6 sm:p-8'>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className='space-y-2 md:space-y-3'
+            className='space-y-4 md:space-y-6'
           >
-            <Input
-              {...register('name')}
-              id='name'
-              type='text'
-              label='Name'
-              placeholder='John Doe'
-            />
-            <span className={`${errors.name ? 'error-msg' : ''}`}>
-              {errors.name ? errors.name.message : <>&nbsp;</>}
-            </span>
-            <Input
-              {...register('email')}
-              id='email'
-              type='email'
-              label='Email'
-              placeholder='name@company.com'
-            />
-            <span className={`${errors.email ? 'error-msg' : ''}`}>
-              {errors.email ? errors.email.message : <>&nbsp;</>}
-            </span>
-            <Input
-              {...register('password')}
-              id='password'
-              type='password'
-              label='Password'
-              placeholder='••••••••'
-            />
-            <span className={`${errors.password ? 'error-msg' : ''}`}>
-              {errors.password ? errors.password.message : <>&nbsp;</>}
-            </span>
-            <Input
-              {...register('confirmPassword')}
-              id='confirmPassword'
-              type='password'
-              label='Confirm Password'
-              placeholder='••••••••'
-            />
-            <span className={`${errors.confirmPassword ? 'error-msg' : ''}`}>
-              {errors.confirmPassword ? (
-                errors.confirmPassword.message
-              ) : (
-                <>&nbsp;</>
-              )}
-            </span>
+            <div className='space-y-2 md:space-y-3'>
+              <Input
+                {...register('name')}
+                id='name'
+                type='text'
+                label='Name'
+                placeholder='John Doe'
+              />
+              <span className={`${errors.name ? 'error-msg' : ''}`}>
+                {errors.name ? errors.name.message : <>&nbsp;</>}
+              </span>
+              <Input
+                {...register('email')}
+                id='email'
+                type='email'
+                label='Email'
+                placeholder='name@company.com'
+              />
+              <span className={`${errors.email ? 'error-msg' : ''}`}>
+                {errors.email ? errors.email.message : <>&nbsp;</>}
+              </span>
+              <Input
+                {...register('password')}
+                id='password'
+                type='password'
+                label='Password'
+                placeholder='••••••••'
+              />
+              <span className={`${errors.password ? 'error-msg' : ''}`}>
+                {errors.password ? errors.password.message : <>&nbsp;</>}
+              </span>
+              <Input
+                {...register('confirmPassword')}
+                id='confirmPassword'
+                type='password'
+                label='Confirm Password'
+                placeholder='••••••••'
+              />
+              <span className={`${errors.confirmPassword ? 'error-msg' : ''}`}>
+                {errors.confirmPassword ? (
+                  errors.confirmPassword.message
+                ) : (
+                  <>&nbsp;</>
+                )}
+              </span>
+            </div>
 
-            <button
-              type='submit'
-              disabled={isSubmitting}
-              className={`${isSubmitting ? 'btn-disabled' : 'btn'} w-full`}
-            >
-              {isSubmitting ? 'Loading...' : 'Sign up'}
-            </button>
-
-            <p className='text-sm font-light text-slate-400'>
-              <span className='mr-1.5'>Already have an account?</span>
-              <Link
-                to='/login'
-                className='font-medium text-primary-600 hover:underline text-primary-500'
+            <div className='space-y-3'>
+              <button
+                type='submit'
+                disabled={isSubmitting}
+                className={`${isSubmitting ? 'btn-disabled' : 'btn'} w-full`}
               >
-                Login
-              </Link>
-            </p>
+                {isSubmitting ? 'Loading...' : 'Sign up'}
+              </button>
+
+              <p className='text-sm font-light text-slate-400'>
+                <span className='mr-1.5'>Already have an account?</span>
+                <Link
+                  to='/login'
+                  className='font-medium text-primary-600 hover:underline text-primary-500'
+                >
+                  Login
+                </Link>
+              </p>
+            </div>
           </form>
         </div>
       </div>

@@ -1,4 +1,4 @@
-export interface ILoginWithGoogleRequest {
+export interface IOAuthLoginRequest {
   type: string;
   provider: string;
   providerAccountId: string;

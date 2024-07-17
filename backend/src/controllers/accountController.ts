@@ -1,12 +1,12 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
 import catchAsync from '../utils/catchAsync';
-import { ILoginWithGoogleRequest } from '../interfaces/request/account.request';
+import { IOAuthLogin } from '../interfaces/request/account.request';
 import Account from '../models/accountModel';
 import User from '../models/userModel';
 import { AppError } from '../utils/appError';
 
-export const loginWithGoogle = catchAsync(
-  async (req: ILoginWithGoogleRequest, res: Response, next: NextFunction) => {
+export const oAuthLogin = catchAsync(
+  async (req: IOAuthLogin, res: Response, next: NextFunction) => {
     const existingUser = await User.findOne({ email: req.body.email });
 
     if (existingUser) {

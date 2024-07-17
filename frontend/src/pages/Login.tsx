@@ -1,4 +1,4 @@
-import { loginWithGoogle } from '@/api/oauth/google.auth';
+import { oAuthLogin } from '@/api/oauth/oauth';
 import { loginUser } from '@/api/users/user.api';
 import AuthSocialButton from '@/components/AuthSocialButton';
 import Input from '@/components/inputs/Input';
@@ -75,7 +75,7 @@ const Login = () => {
       const user = await account.get();
       const session = await account.getSession('current');
 
-      const res = await loginWithGoogle({
+      const res = await oAuthLogin({
         type: 'oauth',
         provider: accountType.GOOGLE,
         providerAccountId: user.$id,
@@ -107,8 +107,43 @@ const Login = () => {
   const handleLoginWithGithub = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
+
+      account.createOAuth2Session(
+        OAuthProvider.Github,
+        'http://localhost:5173/profile', // success url
+        'http://localhost:5173/login' // fail url
+      );
+
+      const user = await account.get();
+      const session = await account.getSession('current');
+
+      const res = await oAuthLogin({
+        type: 'oauth',
+        provider: accountType.GITHUB,
+        providerAccountId: user.$id,
+        providerAccessToken: session.providerAccessToken,
+        expires: session.expire,
+        createdAt: session.$createdAt,
+        updatedAt: session.$updatedAt,
+        name: user.name,
+        email: user.email,
+        photo: user.prefs?.avatar,
+        accountType: accountType.GITHUB,
+        verified: true,
+      });
+
+      if (res.success) {
+        toast.success(res.message);
+
+        if (res.data.user?.verified) {
+          localStorage.setItem('token', res.data.token);
+          navigate('/profile', { replace: true });
+        }
+      } else {
+        toast.error(res.message);
+      }
     },
-    []
+    [navigate]
   );
 
   return (
@@ -122,97 +157,103 @@ const Login = () => {
           <div className='p-6 space-y-4 md:space-y-6 sm:p-8'>
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className='space-y-2 md:space-y-3'
+              className='space-y-4 md:space-y-6'
             >
-              <Input
-                {...register('email')}
-                id='email'
-                type='email'
-                label='Email'
-                placeholder='name@company.com'
-                disabled={isSubmitting}
-              />
-              <span className={`${errors.email ? 'error-msg' : ''}`}>
-                {errors.email ? errors.email.message : <>&nbsp;</>}
-              </span>
-              <Input
-                {...register('password')}
-                id='password'
-                type='password'
-                label='Password'
-                placeholder='••••••••'
-                disabled={isSubmitting}
-              />
-              <span className={`${errors.password ? 'error-msg' : ''}`}>
-                {errors.password ? errors.password.message : <>&nbsp;</>}
-              </span>
+              <div className='space-y-2 md:space-y-3'>
+                <Input
+                  {...register('email')}
+                  id='email'
+                  type='email'
+                  label='Email'
+                  placeholder='name@company.com'
+                  disabled={isSubmitting}
+                />
+                <span className={`${errors.email ? 'error-msg' : ''}`}>
+                  {errors.email ? errors.email.message : <>&nbsp;</>}
+                </span>
+                <Input
+                  {...register('password')}
+                  id='password'
+                  type='password'
+                  label='Password'
+                  placeholder='••••••••'
+                  disabled={isSubmitting}
+                />
+                <span className={`${errors.password ? 'error-msg' : ''}`}>
+                  {errors.password ? errors.password.message : <>&nbsp;</>}
+                </span>
+              </div>
 
-              <div className='flex items-center justify-between'>
-                <div className='flex items-start'>
-                  <div className='flex items-center h-5'>
-                    <input
-                      id='remember'
-                      aria-describedby='remember'
-                      type='checkbox'
-                      className='w-4 h-4 border rounded focus:ring-1 border-slate-600 focus:outline-none focus:border'
+              <div className='space-y-2'>
+                <div className='flex items-center justify-between'>
+                  <div className='flex items-start'>
+                    <div className='flex items-center h-5'>
+                      <input
+                        id='remember'
+                        aria-describedby='remember'
+                        type='checkbox'
+                        className='w-4 h-4 border rounded focus:ring-1 border-slate-600 focus:outline-none focus:border'
+                      />
+                    </div>
+                    <div className='ml-3 text-sm'>
+                      <label htmlFor='remember' className='text-slate-300'>
+                        Remember me
+                      </label>
+                    </div>
+                  </div>
+                  <a
+                    href='#'
+                    className='text-sm font-medium text-slate-300 hover:underline text-primary-500'
+                  >
+                    Forgot password?
+                  </a>
+                </div>
+                <button
+                  type='submit'
+                  disabled={isSubmitting}
+                  className={`${isSubmitting ? 'btn-disabled' : 'btn'} w-full`}
+                >
+                  {isSubmitting ? 'Loading...' : 'Login'}
+                </button>
+              </div>
+
+              <div className='space-y-3'>
+                {/* oauth */}
+                <div className='space-y-6'>
+                  <div className='relative'>
+                    <div className='absolute inset-0 flex items-center'>
+                      <div className='w-full border-t border-slate-700' />
+                    </div>
+                    <div className='relative flex justify-center text-sm'>
+                      <span className='bg-slate-900 px-2 text-slate-500'>
+                        Or continue with
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className='flex gap-2'>
+                    <AuthSocialButton
+                      icon={BsGithub}
+                      onClick={handleLoginWithGithub}
+                    />
+                    <AuthSocialButton
+                      icon={BsGoogle}
+                      onClick={handleLoginWithGoogle}
                     />
                   </div>
-                  <div className='ml-3 text-sm'>
-                    <label htmlFor='remember' className='text-slate-300'>
-                      Remember me
-                    </label>
-                  </div>
                 </div>
-                <a
-                  href='#'
-                  className='text-sm font-medium text-slate-300 hover:underline text-primary-500'
-                >
-                  Forgot password?
-                </a>
+
+                {/* change variant */}
+                <p className='text-sm font-light text-slate-400'>
+                  <span className='mr-1.5'>Don't have an account yet?</span>
+                  <Link
+                    to={'/signup'}
+                    className='font-medium text-primary-600 hover:underline text-primary-500'
+                  >
+                    Sign up
+                  </Link>
+                </p>
               </div>
-              <button
-                type='submit'
-                disabled={isSubmitting}
-                className={`${isSubmitting ? 'btn-disabled' : 'btn'} w-full`}
-              >
-                {isSubmitting ? 'Loading...' : 'Login'}
-              </button>
-
-              {/* google auth */}
-              <div className='mt-6'>
-                <div className='relative'>
-                  <div className='absolute inset-0 flex items-center'>
-                    <div className='w-full border-t border-slate-700' />
-                  </div>
-                  <div className='relative flex justify-center text-sm'>
-                    <span className='bg-slate-900 px-2 text-slate-500'>
-                      Or continue with
-                    </span>
-                  </div>
-                </div>
-
-                <div className='mt-6 flex gap-2'>
-                  <AuthSocialButton
-                    icon={BsGithub}
-                    onClick={handleLoginWithGithub}
-                  />
-                  <AuthSocialButton
-                    icon={BsGoogle}
-                    onClick={handleLoginWithGoogle}
-                  />
-                </div>
-              </div>
-
-              {/* change variant */}
-              <p className='text-sm font-light text-slate-400'>
-                <span className='mr-1.5'>Don't have an account yet?</span>
-                <Link
-                  to={'/signup'}
-                  className='font-medium text-primary-600 hover:underline text-primary-500'
-                >
-                  Sign up
-                </Link>
-              </p>
             </form>
           </div>
         </div>

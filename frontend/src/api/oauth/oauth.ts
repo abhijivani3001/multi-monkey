@@ -1,7 +1,7 @@
-import { ILoginWithGoogleRequest } from '@/interfaces/request/account.request';
+import { IOAuthLoginRequest } from '@/interfaces/request/account.request';
 import axiosInstance from '../axiosInstance';
 
-export const loginWithGoogle = async ({
+export const oAuthLogin = async ({
   type,
   provider,
   providerAccountId,
@@ -14,9 +14,9 @@ export const loginWithGoogle = async ({
   photo,
   accountType,
   verified,
-}: ILoginWithGoogleRequest) => {
+}: IOAuthLoginRequest) => {
   try {
-    const res = await axiosInstance.post('/api/users/loginWithGoogle', {
+    const res = await axiosInstance.post('/api/users/oAuthLogin', {
       type,
       provider,
       providerAccountId,
