@@ -20,6 +20,7 @@ import { PlainResponse } from '../interfaces/response/plain.response';
 import getEnvVar from '../utils/getEnvVar';
 import Token from '../models/tokenModel';
 import { userRoles } from '../constants/roles.constant';
+import { accountType } from '../constants/account.constant';
 
 const signToken = (id: string): string => {
   return jwt.sign({ id }, getEnvVar('JWT_SECRET'), {
@@ -126,6 +127,11 @@ export const login = catchAsync(
     const user: IUser | null = await User.findOne({ email }).select(
       '+password' // select password field explicitly, by default mongoose does not include fields that are marked with select: false in the schema
     );
+
+    if (user && user?.accountType !== accountType.LOCAL) {
+      // user has social account but trying to login with local account credentials (email and password) which is not allowed
+      return next(new AppError('User does not have local account', 400));
+    }
 
     if (!user || !(await user.correctPassword(password, user.password))) {
       return next(new AppError('Incorrect email or password', 401));
