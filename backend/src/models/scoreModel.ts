@@ -34,7 +34,6 @@ const scoreSchema = new Schema<IScore>({
       type: Number,
       required: [true, 'Please provide a mode value'],
     },
-    required: [true, 'Please provide a mode'],
   },
   date: {
     type: Date,

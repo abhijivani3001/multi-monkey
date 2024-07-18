@@ -4,6 +4,8 @@ import { IOAuthLogin } from '../interfaces/request/account.request';
 import Account from '../models/accountModel';
 import User from '../models/userModel';
 import { AppError } from '../utils/appError';
+import jwt from 'jsonwebtoken';
+import getEnvVar from '../utils/getEnvVar';
 
 export const oAuthLogin = catchAsync(
   async (req: IOAuthLogin, res: Response, next: NextFunction) => {
@@ -19,11 +21,19 @@ export const oAuthLogin = catchAsync(
         { new: true }
       );
 
+      const token = jwt.sign(
+        { id: existingUser._id },
+        getEnvVar('JWT_SECRET'),
+        {
+          expiresIn: getEnvVar('JWT_EXPIRES_IN'),
+        }
+      );
+
       const loginWithExistingUserResponse = {
         success: true,
         message: 'Login successful',
         data: {
-          token: updatedAccount?.providerAccessToken,
+          token,
           user: existingUser,
         },
       };
@@ -49,11 +59,15 @@ export const oAuthLogin = catchAsync(
         expires: req.body.expires,
       });
 
+      const token = jwt.sign({ id: newUser._id }, getEnvVar('JWT_SECRET'), {
+        expiresIn: getEnvVar('JWT_EXPIRES_IN'),
+      });
+
       const loginWithNewUserResponse = {
         success: true,
         message: 'Login successful',
         data: {
-          token: newAccount.providerAccessToken,
+          token,
           user: newUser,
         },
       };

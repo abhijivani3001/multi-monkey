@@ -1,6 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import userRouter from './routes/userRouter';
+import scoreRouter from './routes/scoreRouter';
 import { AppError } from './utils/appError';
 import globalErrorHandler from './controllers/errorController';
 
@@ -23,6 +24,8 @@ app.get('/error', (req, res, next) => {
 });
 
 app.use('/api/users', userRouter);
+
+app.use('/api/scores', scoreRouter);
 
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
