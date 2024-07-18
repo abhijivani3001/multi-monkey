@@ -41,6 +41,7 @@ const Signup = () => {
     register,
     handleSubmit,
     setError,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<SignupForm>({
     resolver: zodResolver(schema),
@@ -58,9 +59,7 @@ const Signup = () => {
       toast.success(res.message);
 
       // clear field values
-      Object.keys(data).forEach((key) => {
-        data[key as keyof SignupForm] = '';
-      });
+      reset();
     } else {
       const { field, value, message } = res as IUserError;
 

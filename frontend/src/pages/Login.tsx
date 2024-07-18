@@ -5,6 +5,7 @@ import Input from '@/components/inputs/Input';
 import { account } from '@/config/appwrite/appwriteConfig';
 import { accountType } from '@/constants/account.constant';
 import { IUserResponse } from '@/interfaces/response/user.response';
+import getEnvVar from '@/utils/getEnvVar';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { OAuthProvider } from 'appwrite';
 import { LogIn as LogInIcon } from 'lucide-react';
@@ -35,6 +36,7 @@ const Login = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<LoginForm>({
     resolver: zodResolver(schema),
@@ -54,9 +56,7 @@ const Login = () => {
       }
 
       // clear field values
-      Object.keys(data).forEach((key) => {
-        data[key as keyof LoginForm] = '';
-      });
+      reset();
     } else {
       toast.error(res.message);
     }
@@ -68,8 +68,8 @@ const Login = () => {
 
       account.createOAuth2Session(
         OAuthProvider.Google,
-        'http://localhost:5173/profile', // success url
-        'http://localhost:5173/login' // fail url
+        getEnvVar('VITE_OAUTH_SUCCESS_URL'), // success url
+        getEnvVar('VITE_OAUTH_FAILURE_URL') // fail url
       );
 
       const user = await account.get();
@@ -110,8 +110,8 @@ const Login = () => {
 
       account.createOAuth2Session(
         OAuthProvider.Github,
-        'http://localhost:5173/profile', // success url
-        'http://localhost:5173/login' // fail url
+        getEnvVar('VITE_OAUTH_SUCCESS_URL'), // success url
+        getEnvVar('VITE_OAUTH_FAILURE_URL') // fail url
       );
 
       const user = await account.get();
@@ -127,7 +127,7 @@ const Login = () => {
         updatedAt: session.$updatedAt,
         name: user.name,
         email: user.email,
-        photo: user.prefs?.avatar,
+        photo: getEnvVar('VITE_GITHUB_PROFILE_URL') + '/' + session.providerUid,
         accountType: accountType.GITHUB,
         verified: true,
       });
