@@ -4,6 +4,8 @@ import {
 } from '@/interfaces/request/user.request';
 import axiosInstance from '../axiosInstance';
 import { IUserResponse } from '@/interfaces/response/user.response';
+import { PlainResponse } from '@/interfaces/response/plain.response';
+import { ICreateSendTokenResponse } from '@/interfaces/response/auth.response';
 
 export const signupUser = async ({
   name,
@@ -41,8 +43,8 @@ export const loginUser = async ({ email, password }: ILoginUserRequest) => {
 
 export const logoutUser = async () => {
   try {
-    const res = await axiosInstance.post('/api/users/logout');
-    return res.data;
+    const res: PlainResponse = await axiosInstance.post('/api/users/logout');
+    return res;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return error.response.data;
@@ -51,10 +53,13 @@ export const logoutUser = async () => {
 
 export const forgotPassword = async (email: string) => {
   try {
-    const res = await axiosInstance.post('/api/users/forgotPassword', {
-      email,
-    });
-    return res.data;
+    const res: PlainResponse = await axiosInstance.post(
+      '/api/users/forgotPassword',
+      {
+        email,
+      }
+    );
+    return res;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return error.response.data;
@@ -71,10 +76,13 @@ export const resetPassword = async ({
   token: string;
 }) => {
   try {
-    const res = await axiosInstance.patch(`/api/users/resetPassword/${token}`, {
-      password,
-      confirmPassword,
-    });
+    const res: ICreateSendTokenResponse = await axiosInstance.patch(
+      `/api/users/resetPassword/${token}`,
+      {
+        password,
+        confirmPassword,
+      }
+    );
     return res.data;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
@@ -84,7 +92,7 @@ export const resetPassword = async ({
 
 export const getMe = async () => {
   try {
-    const res = await axiosInstance.get('/api/users/me');
+    const res: IUserResponse = await axiosInstance.get('/api/users/me');
     return res.data;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {

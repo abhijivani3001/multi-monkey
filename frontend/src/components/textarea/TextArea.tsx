@@ -11,10 +11,13 @@ import { useTypingModeContext } from '@/context/TypingMode/TypingModeContext';
 import { useIsTypingContext } from '@/context/IsTyping/IsTypingContext';
 import { postScore } from '@/api/score/score.api';
 import { IScore } from '@/interfaces/score';
+import { useAuthContext } from '@/context/Auth/AuthContext';
+import toast from 'react-hot-toast';
 
 const TextArea = () => {
   const { typingMode } = useTypingModeContext();
   const { isTyping, setIsTyping } = useIsTypingContext();
+  const { isAuth, user } = useAuthContext();
 
   // main:
   const [words, setWords] = useState<JSX.Element[]>([]);
@@ -409,7 +412,7 @@ const TextArea = () => {
 
   useEffect(() => {
     generateWords();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -463,28 +466,33 @@ const TextArea = () => {
       );
       setAccuracy(calculatedAccuracy);
 
-      addScore({
-        userId: '66988d8c8def8b55cd3e4c9b',
-        rawWpm,
-        netWpm,
-        accuracy: calculatedAccuracy,
-        mode: {
-          type: typingMode.type,
-          value: typingMode.value,
-        },
-        date: new Date(),
-        totalCharacters: totalCharsTyped,
-        correctCharacters: totalCharsTyped - uncorrectedErrors - missedChars,
-        incorrectCharacters: uncorrectedErrors,
-        missedCharacters: missedChars,
-        isHighScore: false,
-        typedString: typedWords.join(' '),
-      });
+      if (isAuth && user) {
+        addScore({
+          userId: user._id,
+          rawWpm,
+          netWpm,
+          accuracy: calculatedAccuracy,
+          mode: {
+            type: typingMode.type,
+            value: typingMode.value,
+          },
+          date: new Date(),
+          totalCharacters: totalCharsTyped,
+          correctCharacters: totalCharsTyped - uncorrectedErrors - missedChars,
+          incorrectCharacters: uncorrectedErrors,
+          missedCharacters: missedChars,
+          isHighScore: false,
+          typedString: typedWords.join(' '),
+        });
+      } else {
+        toast('You need to login to save your score', { icon: 'ℹ️' });
+      }
 
       setIsTyping(false);
     }
   }, [
     currIdx,
+    isAuth,
     rawWords,
     setIsTyping,
     timeLeft,
@@ -493,6 +501,7 @@ const TextArea = () => {
     typingMode.type,
     typingMode.value,
     uncorrectedErrors,
+    user,
   ]);
 
   const addScore = async ({
@@ -510,7 +519,7 @@ const TextArea = () => {
     typedString,
   }: IScore) => {
     try {
-      const res = await postScore({
+      await postScore({
         userId,
         rawWpm,
         netWpm,
@@ -524,7 +533,6 @@ const TextArea = () => {
         isHighScore,
         typedString,
       });
-      console.log(res);
     } catch (error) {
       console.log(error);
     }

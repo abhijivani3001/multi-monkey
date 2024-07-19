@@ -11,25 +11,29 @@ import { useAuthContext } from './context/Auth/AuthContext';
 import { useEffect } from 'react';
 import { getMe } from './api/users/user.api';
 import { useLoadingContext } from './context/Loading/LoadingContext';
+import { IUserResponse } from './interfaces/response/user.response';
 
 function App() {
   const { isAuth, setIsAuth, setUser } = useAuthContext();
-  const location = useLocation();
   const { setIsLoading } = useLoadingContext();
+  const location = useLocation();
 
   useEffect(() => {
     const fun = async () => {
       setIsLoading(true);
       setIsAuth(!!localStorage.getItem('token'));
-      const res = await getMe();
-      setUser(res.data.user);
+
+      const res: IUserResponse = await getMe();
+      if (res.success) {
+        setUser(res.data.user);
+      }
       setIsLoading(false);
     };
     fun();
   }, [setIsAuth, setIsLoading, setUser]);
 
   return (
-    <div className='flex flex-col h-screen'>
+    <div className='flow-root flex-col h-screen'>
       <Navbar />
       <Routes>
         <Route path='/' element={<Home />} />
