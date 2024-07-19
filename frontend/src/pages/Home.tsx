@@ -1,21 +1,21 @@
 import SwitchModeTab from '@/components/mode/SwitchModeTab';
 import TextArea from '@/components/textarea/TextArea';
-import { account } from '@/config/appwrite/appwriteConfig';
+import { useAuthContext } from '@/context/Auth/AuthContext';
 import { useEffect } from 'react';
 
 const Home = () => {
+  const { user } = useAuthContext();
+
   useEffect(() => {
     const fun = async () => {
       try {
-        const user = await account.get();
-        const token = await account.getSession('current');
-        console.log(user, token);
+        console.log(user);
       } catch (err) {
         console.log(err);
       }
     };
     fun();
-  }, []);
+  }, [user]);
 
   return (
     <>

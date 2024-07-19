@@ -1,3 +1,4 @@
+import { logoutUser } from '@/api/users/user.api';
 import { account } from '@/config/appwrite/appwriteConfig';
 import { useAuthContext } from '@/context/Auth/AuthContext';
 import { LogOut, User2 } from 'lucide-react';
@@ -15,6 +16,8 @@ const Navbar = () => {
     localStorage.removeItem('token');
     setIsAuth(false);
     setUser(null);
+
+    await logoutUser();
 
     navigate('/login', { replace: true });
     toast.success('Logged out successfully');

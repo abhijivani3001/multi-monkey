@@ -9,14 +9,20 @@ import ProtectedRoute from './utils/ProtectedRoute';
 import EmailVerify from './pages/EmailVerify';
 import { useAuthContext } from './context/Auth/AuthContext';
 import { useEffect } from 'react';
+import { getMe } from './api/users/user.api';
 
 function App() {
-  const { isAuth, setIsAuth } = useAuthContext();
+  const { isAuth, setIsAuth, setUser } = useAuthContext();
   const location = useLocation();
 
   useEffect(() => {
-    setIsAuth(!!localStorage.getItem('token'));
-  }, []);
+    const fun = async () => {
+      setIsAuth(!!localStorage.getItem('token'));
+      const res = await getMe();
+      setUser(res.data.user);
+    };
+    fun();
+  }, [setIsAuth, setUser]);
 
   return (
     <>
