@@ -1,10 +1,13 @@
+import Loader from '@/components/loader/Loader';
 import SwitchModeTab from '@/components/mode/SwitchModeTab';
 import TextArea from '@/components/textarea/TextArea';
 import { useAuthContext } from '@/context/Auth/AuthContext';
+import { useLoadingContext } from '@/context/Loading/LoadingContext';
 import { useEffect } from 'react';
 
 const Home = () => {
   const { user } = useAuthContext();
+  const { isLoading } = useLoadingContext();
 
   useEffect(() => {
     const fun = async () => {
@@ -19,8 +22,14 @@ const Home = () => {
 
   return (
     <>
-      <SwitchModeTab />
-      <TextArea />
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <>
+          <SwitchModeTab />
+          <TextArea />
+        </>
+      )}
     </>
   );
 };

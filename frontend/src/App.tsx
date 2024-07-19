@@ -10,22 +10,26 @@ import EmailVerify from './pages/EmailVerify';
 import { useAuthContext } from './context/Auth/AuthContext';
 import { useEffect } from 'react';
 import { getMe } from './api/users/user.api';
+import { useLoadingContext } from './context/Loading/LoadingContext';
 
 function App() {
   const { isAuth, setIsAuth, setUser } = useAuthContext();
   const location = useLocation();
+  const { setIsLoading } = useLoadingContext();
 
   useEffect(() => {
     const fun = async () => {
+      setIsLoading(true);
       setIsAuth(!!localStorage.getItem('token'));
       const res = await getMe();
       setUser(res.data.user);
+      setIsLoading(false);
     };
     fun();
-  }, [setIsAuth, setUser]);
+  }, [setIsAuth, setIsLoading, setUser]);
 
   return (
-    <>
+    <div className='flex flex-col h-screen'>
       <Navbar />
       <Routes>
         <Route path='/' element={<Home />} />
@@ -59,7 +63,7 @@ function App() {
         />
         <Route path='/*' element={<NotFound />} />
       </Routes>
-    </>
+    </div>
   );
 }
 

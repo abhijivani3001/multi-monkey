@@ -532,7 +532,7 @@ const TextArea = () => {
 
   return (
     <>
-      <div className='flex justify-center items-center flex-1 h-[60vh] mx-auto'>
+      <div className='flex justify-center items-center h-[60vh] mx-auto'>
         <div>
           {timeLeft !== 0 && (
             <div>
