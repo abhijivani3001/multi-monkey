@@ -1,13 +1,9 @@
+import { ITypingMode } from '@/interfaces/score';
 import React, { useContext, createContext } from 'react';
 
-export interface TypingMode {
-  mode: 'time' | 'words' | 'quote';
-  value: number | string;
-}
-
 export interface TypingModeContextProps {
-  typingMode: TypingMode;
-  setTypingMode: React.Dispatch<React.SetStateAction<TypingMode>>;
+  typingMode: ITypingMode;
+  setTypingMode: React.Dispatch<React.SetStateAction<ITypingMode>>;
 }
 
 export const TypingModeContext = createContext<

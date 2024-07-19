@@ -9,6 +9,8 @@ import {
 } from '../ui/tooltip';
 import { useTypingModeContext } from '@/context/TypingMode/TypingModeContext';
 import { useIsTypingContext } from '@/context/IsTyping/IsTypingContext';
+import { postScore } from '@/api/score/score.api';
+import { IScore } from '@/interfaces/score';
 
 const TextArea = () => {
   const { typingMode } = useTypingModeContext();
@@ -407,6 +409,7 @@ const TextArea = () => {
 
   useEffect(() => {
     generateWords();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -424,17 +427,12 @@ const TextArea = () => {
       return;
     }
 
-    if (timeLeft === 0) {
-      setIsTyping(false);
-      return;
-    }
-
     const timerId = setInterval(() => {
       setTimeLeft((prevTime) => prevTime - 1);
     }, 1000);
 
     return () => clearInterval(timerId);
-  }, [isTyping, setIsTyping, timeLeft]);
+  }, [isTyping, timeLeft]);
 
   useEffect(() => {
     if (timeLeft === 0) {
@@ -464,16 +462,73 @@ const TextArea = () => {
           100
       );
       setAccuracy(calculatedAccuracy);
+
+      addScore({
+        userId: '66988d8c8def8b55cd3e4c9b',
+        rawWpm,
+        netWpm,
+        accuracy: calculatedAccuracy,
+        mode: {
+          type: typingMode.type,
+          value: typingMode.value,
+        },
+        date: new Date(),
+        totalCharacters: totalCharsTyped,
+        correctCharacters: totalCharsTyped - uncorrectedErrors - missedChars,
+        incorrectCharacters: uncorrectedErrors,
+        missedCharacters: missedChars,
+        isHighScore: false,
+        typedString: typedWords.join(' '),
+      });
+
+      setIsTyping(false);
     }
   }, [
     currIdx,
     rawWords,
+    setIsTyping,
     timeLeft,
     totalCharsTyped,
     typedWords,
+    typingMode.type,
     typingMode.value,
     uncorrectedErrors,
   ]);
+
+  const addScore = async ({
+    userId,
+    rawWpm,
+    netWpm,
+    accuracy,
+    mode,
+    date,
+    totalCharacters,
+    correctCharacters,
+    incorrectCharacters,
+    missedCharacters,
+    isHighScore,
+    typedString,
+  }: IScore) => {
+    try {
+      const res = await postScore({
+        userId,
+        rawWpm,
+        netWpm,
+        accuracy,
+        mode,
+        date,
+        totalCharacters,
+        correctCharacters,
+        incorrectCharacters,
+        missedCharacters,
+        isHighScore,
+        typedString,
+      });
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>

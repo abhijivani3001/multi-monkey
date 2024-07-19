@@ -31,13 +31,17 @@ const scoreSchema = new Schema<IScore>({
       required: [true, 'Please provide a mode type'],
     },
     value: {
-      type: Number,
+      type: Schema.Types.Mixed,
       required: [true, 'Please provide a mode value'],
     },
   },
   date: {
     type: Date,
     required: [true, 'Please provide a date'],
+  },
+  totalCharacters: {
+    type: Number,
+    required: [true, 'Please provide a total count'],
   },
   correctCharacters: {
     type: Number,

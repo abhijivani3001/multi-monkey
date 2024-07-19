@@ -7,6 +7,7 @@ export interface IScore {
   accuracy: number;
   mode: ITypingMode;
   date: Date;
+  totalCharacters: number;
   correctCharacters: number;
   incorrectCharacters: number;
   missedCharacters: number;
@@ -22,5 +23,5 @@ export interface ITypingModeTypes {
 
 export interface ITypingMode {
   type: ITypingModeTypes;
-  value: number; // time in seconds for time mode, word count for word mode
+  value: number | string; // time in seconds for time mode, word count for word mode, quote for quote mode
 }

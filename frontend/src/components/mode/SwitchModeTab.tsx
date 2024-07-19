@@ -41,10 +41,10 @@ const SwitchModeTab = () => {
               <div className='flex justify-center items-center gap-6'>
                 <button
                   className={`btn2 ${
-                    typingMode.mode === 'time' ? 'text-sky-400' : ''
+                    typingMode.type === 'time' ? 'text-sky-400' : ''
                   }`}
                   onClick={() => {
-                    setTypingMode({ mode: 'time', value: timeModeValues[0] });
+                    setTypingMode({ type: 'time', value: timeModeValues[0] });
                   }}
                 >
                   <div>
@@ -54,10 +54,10 @@ const SwitchModeTab = () => {
                 </button>
                 <button
                   className={`btn2 ${
-                    typingMode.mode === 'words' ? 'text-sky-400' : ''
+                    typingMode.type === 'words' ? 'text-sky-400' : ''
                   }`}
                   onClick={() => {
-                    setTypingMode({ mode: 'words', value: wordsModeValues[0] });
+                    setTypingMode({ type: 'words', value: wordsModeValues[0] });
                   }}
                 >
                   <div>
@@ -67,10 +67,10 @@ const SwitchModeTab = () => {
                 </button>
                 <button
                   className={`btn2 ${
-                    typingMode.mode === 'quote' ? 'text-sky-400' : ''
+                    typingMode.type === 'quote' ? 'text-sky-400' : ''
                   }`}
                   onClick={() => {
-                    setTypingMode({ mode: 'quote', value: quoteModeValues[0] });
+                    setTypingMode({ type: 'quote', value: quoteModeValues[0] });
                   }}
                 >
                   <div>
@@ -83,7 +83,7 @@ const SwitchModeTab = () => {
 
               {/* numeric values */}
               <div className='flex justify-center items-center gap-4'>
-                {typingMode.mode === 'time' &&
+                {typingMode.type === 'time' &&
                   timeModeValues.map((item) => (
                     <button
                       key={item}
@@ -98,7 +98,7 @@ const SwitchModeTab = () => {
                       {item}
                     </button>
                   ))}
-                {typingMode.mode === 'words' &&
+                {typingMode.type === 'words' &&
                   wordsModeValues.map((item) => (
                     <button
                       key={item}
@@ -113,7 +113,7 @@ const SwitchModeTab = () => {
                       {item}
                     </button>
                   ))}
-                {typingMode.mode === 'quote' &&
+                {typingMode.type === 'quote' &&
                   quoteModeValues.map((item) => (
                     <button
                       key={item}
