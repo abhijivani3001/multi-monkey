@@ -9,7 +9,7 @@ import {
 export const getScores = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
-    const scores = await Score.find({ userId: id });
+    const scores = await Score.find({ userId: id }); // userId: ObjectId(id)
 
     const getScoresResponse: IGetScoresResponse = {
       success: true,

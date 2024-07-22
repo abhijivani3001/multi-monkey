@@ -21,7 +21,12 @@ function App() {
   useEffect(() => {
     const fun = async () => {
       setIsLoading(true);
-      setIsAuth(!!localStorage.getItem('token'));
+
+      const isToken = localStorage.getItem('token');
+      setIsAuth(!!isToken);
+      if (!isToken) {
+        setUser(null);
+      }
 
       const res: IUserResponse = await getMe();
       if (res.success) {
@@ -30,7 +35,7 @@ function App() {
       setIsLoading(false);
     };
     fun();
-  }, [setIsAuth, setIsLoading, setUser]);
+  }, [isAuth, setIsAuth, setIsLoading, setUser]);
 
   return (
     <div className='flow-root flex-col h-screen'>

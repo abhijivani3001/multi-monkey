@@ -1,14 +1,14 @@
 import { IUser } from '@/interfaces/user';
 import { createContext, useContext } from 'react';
 
-export interface Auth {
+export interface IAuthContext {
   isAuth: boolean;
   setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
   user: IUser | null;
   setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
 }
 
-export const AuthContext = createContext<Auth>({
+export const AuthContext = createContext<IAuthContext>({
   isAuth: false,
   setIsAuth: () => {},
   user: null,

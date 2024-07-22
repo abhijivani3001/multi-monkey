@@ -4,6 +4,7 @@ import AuthSocialButton from '@/components/AuthSocialButton';
 import Input from '@/components/inputs/Input';
 import { account } from '@/config/appwrite/appwriteConfig';
 import { accountType } from '@/constants/account.constant';
+import { useAuthContext } from '@/context/Auth/AuthContext';
 import { IUserResponse } from '@/interfaces/response/user.response';
 import getEnvVar from '@/utils/getEnvVar';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -32,6 +33,7 @@ type LoginForm = z.infer<typeof schema>;
 
 const Login = () => {
   const navigate = useNavigate();
+  const { setIsAuth } = useAuthContext();
 
   const {
     register,
@@ -47,13 +49,12 @@ const Login = () => {
       email: data.email,
       password: data.password,
     });
-    if (res.success) {
+    if (res.success && res.data.user?.verified) {
+      localStorage.setItem('token', res.token);
+      
       toast.success(res.message);
-
-      if (res.data.user?.verified) {
-        localStorage.setItem('token', res.token);
-        navigate('/profile', { replace: true });
-      }
+      setIsAuth(true);
+      navigate('/profile', { replace: true });
 
       // clear field values
       reset();
@@ -66,7 +67,7 @@ const Login = () => {
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
 
-      account.createOAuth2Session(
+      await account.createOAuth2Session(
         OAuthProvider.Google,
         getEnvVar('VITE_OAUTH_SUCCESS_URL'), // success url
         getEnvVar('VITE_OAUTH_FAILURE_URL') // fail url

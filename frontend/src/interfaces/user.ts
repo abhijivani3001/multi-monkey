@@ -7,6 +7,7 @@ export interface IUser {
   photo?: string;
   password: string;
   confirmPassword?: string;
+  accountType: string;
   passwordChangedAt?: Date;
   passwordResetToken?: string;
   passwordResetExpires?: Date;

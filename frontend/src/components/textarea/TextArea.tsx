@@ -73,7 +73,7 @@ const TextArea = () => {
           <span
             key={letterIndex}
             className={`${
-              index === 0 && letterIndex === 0 ? 'border-b-2' : ''
+              index === 0 && letterIndex === 0 ? 'border-b-white' : ''
             }`}
           >
             {letter}
@@ -145,7 +145,7 @@ const TextArea = () => {
               .map((letter, letterIndex) => (
                 <span
                   key={letterIndex}
-                  className={letterIndex === 0 ? 'border-b-2' : ''}
+                  className={letterIndex === 0 ? 'border-b-white' : ''}
                 >
                   {letter}
                 </span>
@@ -181,7 +181,7 @@ const TextArea = () => {
                 .map((letter, letterIndex) => {
                   if (currPos === letterIndex + 1) {
                     return (
-                      <span key={letterIndex} className='border-b-2'>
+                      <span key={letterIndex} className='border-b-white'>
                         {letter}
                       </span>
                     );
@@ -234,7 +234,7 @@ const TextArea = () => {
                     lastTypedCharPosition[lastTypedCharPosition.length - 1]
                   ) {
                     return (
-                      <span key={letterIndex} className='border-b-2'>
+                      <span key={letterIndex} className='border-b-white'>
                         {letter}
                       </span>
                     );
@@ -256,7 +256,7 @@ const TextArea = () => {
                       lastTypedCharPosition[
                         lastTypedCharPosition.length - 1
                       ] === rawWords[index].length
-                        ? 'border-b-2'
+                        ? 'border-b-white'
                         : ''
                     }`}
                   >
@@ -343,7 +343,7 @@ const TextArea = () => {
             .map((letter, letterIndex) => {
               if (currPos === letterIndex - 1) {
                 return (
-                  <span key={letterIndex} className='border-b-2'>
+                  <span key={letterIndex} className='border-b-white'>
                     {letter}
                   </span>
                 );
@@ -377,7 +377,7 @@ const TextArea = () => {
               <span
                 className={`${
                   currPos === wordElement.props.children[0].length - 1
-                    ? 'border-b-2'
+                    ? 'border-b-white'
                     : ''
                 }`}
               >
@@ -549,7 +549,7 @@ const TextArea = () => {
                   <p className='text-sky-400 text-4xl'>{timeLeft}</p>
                 )}
               </div>
-              <div className='line-clamp-3 font-roboto relative bg-slate-800 text-slate-500  w-[90vw] md:w-[85vw] max-w-screen-2xl text-4xl leading-snug'>
+              <div className='line-clamp-3 font-roboto relative text-slate-500  w-[90vw] md:w-[85vw] max-w-screen-2xl text-4xl leading-snug'>
                 <div>{words}</div>
               </div>
             </div>

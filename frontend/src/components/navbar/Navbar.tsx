@@ -1,5 +1,6 @@
 import { logoutUser } from '@/api/users/user.api';
 import { account } from '@/config/appwrite/appwriteConfig';
+import { accountType } from '@/constants/account.constant';
 import { useAuthContext } from '@/context/Auth/AuthContext';
 import { LogOut, User2 } from 'lucide-react';
 import { useCallback } from 'react';
@@ -7,21 +8,23 @@ import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
-  const { isAuth, setIsAuth, setUser } = useAuthContext();
+  const { isAuth, setIsAuth, setUser, user } = useAuthContext();
   const navigate = useNavigate();
 
   const logoutHandler = useCallback(async () => {
-    await account.deleteSession('current');
+    if (user && user.accountType !== accountType.LOCAL) {
+      await account.deleteSession('current');
+    }
+
+    await logoutUser();
 
     localStorage.removeItem('token');
     setIsAuth(false);
     setUser(null);
 
-    await logoutUser();
-
     navigate('/login', { replace: true });
     toast.success('Logged out successfully');
-  }, [navigate, setIsAuth, setUser]);
+  }, [navigate, setIsAuth, setUser, user]);
 
   return (
     <nav className='z-30 w-full sticky top-0 backdrop-blur-lg'>
