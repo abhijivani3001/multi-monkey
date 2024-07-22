@@ -19,23 +19,34 @@ function App() {
   const location = useLocation();
 
   useEffect(() => {
-    const fun = async () => {
+    const fetchUser = async () => {
       setIsLoading(true);
 
-      const isToken = localStorage.getItem('token');
-      setIsAuth(!!isToken);
-      if (!isToken) {
+      const token = localStorage.getItem('token');
+      const isAuthenticated = !!token;
+      setIsAuth(isAuthenticated);
+
+      if (!isAuthenticated) {
         setUser(null);
+      } else {
+        try {
+          const res: IUserResponse = await getMe();
+          if (res.success) {
+            setUser(res.data.user);
+          } else {
+            setUser(null);
+          }
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+          setUser(null);
+        }
       }
 
-      const res: IUserResponse = await getMe();
-      if (res.success) {
-        setUser(res.data.user);
-      }
       setIsLoading(false);
     };
-    fun();
-  }, [isAuth, setIsAuth, setIsLoading, setUser]);
+
+    fetchUser();
+  }, [setIsLoading, setIsAuth, setUser, isAuth]);
 
   return (
     <div className='flow-root flex-col h-screen'>

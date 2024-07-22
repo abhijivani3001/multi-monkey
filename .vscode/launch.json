@@ -1,0 +1,10 @@
+{
+  "configurations": [
+    {
+      "command": "cd backend; cd server; npm run dev",
+      "name": "backend",
+      "request": "launch",
+      "type": "node-terminal"
+    }
+  ]
+}
