@@ -1,9 +1,15 @@
 import { IScore } from '@/interfaces/score';
 import axiosInstance from '../axiosInstance';
+import {
+  IGetScoresResponse,
+  IPostScoreResponse,
+} from '@/interfaces/response/score.response';
 
 export const getScores = async ({ id }: { id: string }) => {
   try {
-    const res = await axiosInstance.get(`/api/scores/${id}`);
+    const res: IGetScoresResponse = await axiosInstance.get(
+      `/api/scores/${id}`
+    );
     return res.data;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
@@ -26,7 +32,7 @@ export const postScore = async ({
   typedString,
 }: IScore) => {
   try {
-    const res = await axiosInstance.post(`/api/scores`, {
+    const res: IPostScoreResponse = await axiosInstance.post(`/api/scores`, {
       userId,
       rawWpm,
       netWpm,

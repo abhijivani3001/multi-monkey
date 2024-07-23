@@ -540,7 +540,7 @@ const TextArea = () => {
 
   return (
     <>
-      <div className='flex justify-center items-center h-[60vh] mx-auto'>
+      <div className='flex justify-center items-center w-full h-[60vh] mx-auto'>
         <div>
           {timeLeft !== 0 && (
             <div>
@@ -549,7 +549,7 @@ const TextArea = () => {
                   <p className='text-sky-400 text-4xl'>{timeLeft}</p>
                 )}
               </div>
-              <div className='line-clamp-3 font-roboto relative text-slate-500  w-[90vw] md:w-[85vw] max-w-screen-2xl text-4xl leading-snug'>
+              <div className='line-clamp-3 font-roboto relative text-slate-500 text-4xl leading-snug'>
                 <div>{words}</div>
               </div>
             </div>

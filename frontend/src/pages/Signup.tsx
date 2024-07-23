@@ -80,7 +80,7 @@ const Signup = () => {
   };
 
   return (
-    <div className='flex flex-col items-center justify-center px-6 pt-4 pb-6 mx-auto'>
+    <div className='flex flex-col w-full items-center justify-center pt-4 pb-6 mx-auto'>
       <div className='flex items-center gap-3 mb-4 text-xl md:text-2xl font-semibold text-slate-100'>
         <UserRoundPlus className='h-5 w-5 md:h-6 md:w-6' strokeWidth='2.5' />
         <span>Sign up</span>

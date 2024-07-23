@@ -28,7 +28,7 @@ const Navbar = () => {
 
   return (
     <nav className='z-30 w-full sticky top-0 backdrop-blur-lg'>
-      <div className='max-w-screen-xl flex items-center justify-between mx-auto px-8 py-4 md:p-4 my-auto'>
+      <div className='flex items-center justify-between mx-auto py-4 my-auto'>
         <Link
           to={'/'}
           className='flex focus:outline-none items-center space-x-3 rtl:space-x-reverse'

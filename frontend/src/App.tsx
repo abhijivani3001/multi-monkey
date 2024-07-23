@@ -49,7 +49,7 @@ function App() {
   }, [setIsLoading, setIsAuth, setUser, isAuth]);
 
   return (
-    <div className='flow-root flex-col h-screen'>
+    <div className='flex flex-col h-screen max-w-screen-xl mx-auto w-full px-4 md:px-2'>
       <Navbar />
       <Routes>
         <Route path='/' element={<Home />} />
