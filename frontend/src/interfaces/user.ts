@@ -19,6 +19,7 @@ export interface IUser {
   createPasswordResetToken(): string;
   active?: boolean;
   verified: boolean;
+  createdAt: Date;
 }
 
 export interface IUserRoles {
