@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../utils/appError';
-import getEnvVar from '../utils/getEnvVar';
 
 interface CastError extends Error {
   path: string;
@@ -67,17 +66,6 @@ const handleJWTError = () =>
 const handleJWTExpiredError = () =>
   new AppError('Your token has expired! Please log in again.', 401);
 
-const sendErrorDev = (err: CustomError, req: Request, res: Response) => {
-  // A) API
-  if (req.originalUrl.startsWith('/api')) {
-    return res.status(err.statusCode || 500).json(err);
-  }
-
-  // B) RENDERED WEBSITE
-  console.error('ERROR 💥', err);
-  return res.status(err.statusCode || 500).json(err);
-};
-
 const sendErrorProd = (err: CustomError, req: Request, res: Response) => {
   // A) API
   if (req.originalUrl.startsWith('/api')) {
@@ -128,21 +116,16 @@ export default (
 ) => {
   err.statusCode = err.statusCode || 500;
 
-  if (getEnvVar('NODE_ENV') === 'development') {
-    sendErrorDev(err, req, res);
-  } else if (getEnvVar('NODE_ENV') === 'production') {
-    let error = { ...err };
-    error.message = err.message;
+  let error = { ...err };
+  error.message = err.message;
 
-    if (error.name === 'CastError')
-      error = handleCastErrorDB(error as CastError);
-    if (error.code === 11000)
-      error = handleDuplicateFieldsDB(error as DuplicateFieldsError);
-    if (error.name === 'ValidationError')
-      error = handleValidationErrorDB(error as ValidationError);
-    if (error.name === 'JsonWebTokenError') error = handleJWTError();
-    if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
+  if (error.name === 'CastError') error = handleCastErrorDB(error as CastError);
+  if (error.code === 11000)
+    error = handleDuplicateFieldsDB(error as DuplicateFieldsError);
+  if (error.name === 'ValidationError')
+    error = handleValidationErrorDB(error as ValidationError);
+  if (error.name === 'JsonWebTokenError') error = handleJWTError();
+  if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
 
-    sendErrorProd(error, req, res);
-  }
+  sendErrorProd(error, req, res);
 };
