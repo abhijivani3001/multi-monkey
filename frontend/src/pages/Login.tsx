@@ -70,7 +70,7 @@ const Login = () => {
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
 
-      await account.createOAuth2Session(
+      account.createOAuth2Session(
         OAuthProvider.Google,
         getEnvVar('VITE_OAUTH_SUCCESS_URL'), // success url
         getEnvVar('VITE_OAUTH_FAILURE_URL') // fail url
@@ -89,7 +89,6 @@ const Login = () => {
         updatedAt: session.$updatedAt,
         name: user.name,
         email: user.email,
-        photo: user.prefs?.avatar,
         accountType: accountType.GOOGLE,
         verified: true,
       });

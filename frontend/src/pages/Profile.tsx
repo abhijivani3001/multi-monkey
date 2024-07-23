@@ -74,8 +74,8 @@ const Profile = () => {
   }
 
   return (
-    <div className='w-full space-y-6'>
-      <Card className='bg-slate-900 mt-4 bg-opacity-80 p-4 flex justify-between items-stretch gap-6'>
+    <div className='w-full space-y-6 my-4'>
+      <Card className='bg-slate-900 bg-opacity-80 p-4 flex justify-between items-stretch gap-6'>
         <div className='flex justify-center items-center gap-4'>
           <img
             src={user.photo}
