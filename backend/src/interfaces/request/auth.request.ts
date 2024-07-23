@@ -9,6 +9,7 @@ export interface ISignupRequest extends Request {
     confirmPassword: string;
     role?: string;
     passwordChangedAt: Date;
+    photo: string;
   };
 }
 

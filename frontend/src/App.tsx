@@ -20,8 +20,6 @@ function App() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      setIsLoading(true);
-
       const token = localStorage.getItem('token');
       const isAuthenticated = !!token;
       setIsAuth(isAuthenticated);
@@ -30,6 +28,7 @@ function App() {
         setUser(null);
       } else {
         try {
+          setIsLoading(true);
           const res: IUserResponse = await getMe();
           if (res.success) {
             setUser(res.data.user);
@@ -39,10 +38,10 @@ function App() {
         } catch (error) {
           console.error('Error fetching user data:', error);
           setUser(null);
+        } finally {
+          setIsLoading(false);
         }
       }
-
-      setIsLoading(false);
     };
 
     fetchUser();

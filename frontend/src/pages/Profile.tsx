@@ -82,6 +82,7 @@ const Profile = () => {
             alt='profile photo'
             className='w-20 h-20 rounded-full shadow-sm border'
           />
+
           <div className='flex flex-col gap-1 justify-center items-start max-w-[20rem] line-clamp-1'>
             <div className='text-2xl font-bold'>{user.name}</div>
             <div className='text-xs font-light text-slate-400'>

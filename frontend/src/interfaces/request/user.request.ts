@@ -8,4 +8,5 @@ export interface ISignupUserRequest {
   email: string;
   password: string;
   confirmPassword: string;
+  photo: string;
 }

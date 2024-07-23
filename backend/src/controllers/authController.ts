@@ -110,6 +110,7 @@ export const signup = catchAsync(
       confirmPassword: req.body.confirmPassword,
       role: req.body.role ?? userRoles.USER,
       passwordChangedAt: req.body.passwordChangedAt,
+      photo: req.body.photo,
     });
 
     await sendTokenForVerification(newUser, req, res);

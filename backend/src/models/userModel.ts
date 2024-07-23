@@ -20,6 +20,8 @@ const userSchema = new Schema<IUser>({
   },
   photo: {
     type: String,
+    required: [true, 'Please provide a photo'],
+    default: 'https://api.multiavatar.com/66493f858b6dc78b85.svg',
   },
   role: {
     type: String,

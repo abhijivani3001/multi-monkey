@@ -1,6 +1,8 @@
 import { signupUser } from '@/api/users/user.api';
 import Input from '@/components/inputs/Input';
 import { IUserError, IUserResponse } from '@/interfaces/response/user.response';
+import { generateRandomString } from '@/utils/generateRandomString';
+import getEnvVar from '@/utils/getEnvVar';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { UserRoundPlus } from 'lucide-react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -53,6 +55,8 @@ const Signup = () => {
       email: data.email,
       password: data.password,
       confirmPassword: data.confirmPassword,
+      photo:
+        getEnvVar('VITE_MULTIAVATAR_URL') + generateRandomString() + '.svg',
     });
 
     if (res.success) {

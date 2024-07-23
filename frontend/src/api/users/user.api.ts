@@ -12,6 +12,7 @@ export const signupUser = async ({
   email,
   password,
   confirmPassword,
+  photo,
 }: ISignupUserRequest) => {
   try {
     const res: IUserResponse = await axiosInstance.post('/api/users/signup', {
@@ -19,6 +20,7 @@ export const signupUser = async ({
       email,
       password,
       confirmPassword,
+      photo,
     });
     return res.data;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -49,15 +49,18 @@ const Login = () => {
       email: data.email,
       password: data.password,
     });
-    if (res.success && res.data.user?.verified) {
-      localStorage.setItem('token', res.token);
-
+    if (res.success) {
       toast.success(res.message);
-      setIsAuth(true);
-      navigate('/profile', { replace: true });
 
-      // clear field values
-      reset();
+      if (res.data.user?.verified) {
+        localStorage.setItem('token', res.token);
+
+        setIsAuth(true);
+        navigate('/profile', { replace: true });
+        
+        // clear field values
+        reset();
+      }
     } else {
       toast.error(res.message);
     }
