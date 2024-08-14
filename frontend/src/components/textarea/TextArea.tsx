@@ -13,6 +13,7 @@ import { postScore } from '@/api/score/score.api';
 import { IScore } from '@/interfaces/score';
 import { useAuthContext } from '@/context/Auth/AuthContext';
 import toast from 'react-hot-toast';
+import { typingModes } from '@/constants/typingMode.constant';
 
 const TextArea = () => {
   const { typingMode } = useTypingModeContext();
@@ -62,7 +63,11 @@ const TextArea = () => {
   };
 
   const generateWords = () => {
-    let arr = generate(100);
+    let wordsToBeGenerated = 100;
+    if(typingMode.type === typingModes.WORDS_MODE){
+      wordsToBeGenerated = typingMode.value;
+    }
+    let arr = generate(wordsToBeGenerated);
     if (typeof arr === 'string') arr = arr.split(' ');
 
     setRawWords(arr);
@@ -413,7 +418,7 @@ const TextArea = () => {
   useEffect(() => {
     generateWords();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [typingMode]);
 
   useEffect(() => {
     setTimeLeft(typeof typingMode.value === 'number' ? typingMode.value : 10);

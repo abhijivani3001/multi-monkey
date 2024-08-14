@@ -26,7 +26,6 @@ const scoreSchema = new Schema<IScore>({
       enum: [
         typingModes.TIME_MODE,
         typingModes.WORDS_MODE,
-        typingModes.QUOTE_MODE,
       ],
       required: [true, 'Please provide a mode type'],
     },

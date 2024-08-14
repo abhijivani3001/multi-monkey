@@ -1,7 +1,6 @@
 import { MdAccessTimeFilled } from 'react-icons/md';
 import VerticalDivider from '../divider/VerticalDivider';
 import { RxLetterCaseCapitalize } from 'react-icons/rx';
-import { FaQuoteLeft } from 'react-icons/fa';
 import { AtSign, Hash } from 'lucide-react';
 import { useTypingModeContext } from '@/context/TypingMode/TypingModeContext';
 import { useIsTypingContext } from '@/context/IsTyping/IsTypingContext';
@@ -12,7 +11,6 @@ const SwitchModeTab = () => {
 
   const timeModeValues = [15, 30, 60, 120];
   const wordsModeValues = [10, 25, 50, 100];
-  const quoteModeValues = ['all', 'short', 'medium', 'long'];
 
   return (
     <>
@@ -65,19 +63,6 @@ const SwitchModeTab = () => {
                   </div>
                   <div>words</div>
                 </button>
-                <button
-                  className={`btn2 ${
-                    typingMode.type === 'quote' ? 'text-sky-400' : ''
-                  }`}
-                  onClick={() => {
-                    setTypingMode({ type: 'quote', value: quoteModeValues[0] });
-                  }}
-                >
-                  <div>
-                    <FaQuoteLeft />
-                  </div>
-                  <div>quote</div>
-                </button>
               </div>
               <VerticalDivider />
 
@@ -100,21 +85,6 @@ const SwitchModeTab = () => {
                   ))}
                 {typingMode.type === 'words' &&
                   wordsModeValues.map((item) => (
-                    <button
-                      key={item}
-                      className={`btn2 ${
-                        item === typingMode.value ? 'text-sky-400' : ''
-                      }`}
-                      onClick={(e) => {
-                        e.currentTarget.blur();
-                        setTypingMode({ ...typingMode, value: item });
-                      }}
-                    >
-                      {item}
-                    </button>
-                  ))}
-                {typingMode.type === 'quote' &&
-                  quoteModeValues.map((item) => (
                     <button
                       key={item}
                       className={`btn2 ${
