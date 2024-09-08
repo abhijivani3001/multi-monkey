@@ -17,11 +17,11 @@ import { IScoreChartData } from '@/interfaces/chart';
 const chartConfig = {
   netWpm: {
     label: 'Net WPM',
-    color: 'hsl(var(--chart-2))',
+    color: 'hsl(var(--chart-1))',
   },
   rawWpm: {
     label: 'Raw WPM',
-    color: 'hsl(var(--chart-1))',
+    color: 'hsl(var(--chart-5))',
   },
 } satisfies ChartConfig;
 
@@ -46,8 +46,8 @@ const WpmChart: React.FC<WpmChartProps> = ({ chartData }) => {
             <XAxis
               label={{ value: 'Tests', position: 'insideBottom' }}
               dataKey='wpm'
-              tickLine={false}
-              axisLine={false}
+              tickLine={true}
+              axisLine={true}
               tickMargin={8}
               tickCount={40}
               tickFormatter={(value) => value.slice(0, 3)}
@@ -63,15 +63,9 @@ const WpmChart: React.FC<WpmChartProps> = ({ chartData }) => {
                 position: 'insideLeft',
               }}
             />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-            <Area
-              dataKey='netWpm'
-              type='natural'
-              fill='var(--color-netWpm)'
-              fillOpacity={0.4}
-              stroke='var(--color-netWpm)'
-              stackId='a'
-              dot={true}
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent indicator='line' />}
             />
             <Area
               dataKey='rawWpm'
@@ -79,7 +73,16 @@ const WpmChart: React.FC<WpmChartProps> = ({ chartData }) => {
               fill='var(--color-rawWpm)'
               fillOpacity={0.4}
               stroke='var(--color-rawWpm)'
-              stackId='a'
+              // stackId='a'
+              dot={true}
+            />
+            <Area
+              dataKey='netWpm'
+              type='natural'
+              fill='var(--color-netWpm)'
+              fillOpacity={0.4}
+              stroke='var(--color-netWpm)'
+              // stackId='a'
               dot={true}
             />
           </AreaChart>
