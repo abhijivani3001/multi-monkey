@@ -33,6 +33,14 @@ const scoreSchema = new Schema<IScore>({
       type: Schema.Types.Mixed,
       required: [true, 'Please provide a mode value'],
     },
+    enableNumbers: {
+      type: Boolean,
+      default: false,
+    },
+    enablePunctuation: {
+      type: Boolean,
+      default: false,
+    },
   },
   date: {
     type: Date,
@@ -57,6 +65,9 @@ const scoreSchema = new Schema<IScore>({
   isHighScore: {
     type: Boolean,
     required: [true, 'Please provide a high score status'],
+  },
+  typedString: {
+    type: String,
   },
 });
 

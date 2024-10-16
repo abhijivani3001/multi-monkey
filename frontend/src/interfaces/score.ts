@@ -19,6 +19,8 @@ export interface ITypingModeTypes {
 }
 
 export interface ITypingMode {
-  type: ITypingModeTypes | string;
+  type: keyof ITypingModeTypes | string;
   value: number; // time in seconds for time mode, word count for word mode
+  enableNumbers: boolean; // whether numbers are enabled or disabled
+  enablePunctuation: boolean; // whether punctuation is enabled or disabled
 }
