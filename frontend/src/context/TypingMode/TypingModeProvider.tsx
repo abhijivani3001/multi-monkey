@@ -11,6 +11,8 @@ export const TypingModeProvider = ({
   const [typingMode, setTypingMode] = useState<ITypingMode>({
     type: typingModes.TIME_MODE as unknown as ITypingModeTypes,
     value: 15,
+    enableNumbers: false,       // Default to true for numbers
+    enablePunctuation: false,   // Default to true for punctuation
   });
 
   return (

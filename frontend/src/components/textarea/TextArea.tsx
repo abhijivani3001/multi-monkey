@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { generate } from 'random-words';
+import generateRandomText  from '@/utils/generateRandomWords';
 import { VscDebugRestart } from 'react-icons/vsc';
 import {
   Tooltip,
@@ -62,46 +62,49 @@ const TextArea = () => {
     return regex.test(key);
   };
 
-  const generateWords = () => {
-    let wordsToBeGenerated = 100;
-    if(typingMode.type === typingModes.WORDS_MODE){
-      wordsToBeGenerated = typingMode.value;
-    }
-    let arr = generate(wordsToBeGenerated);
-    if (typeof arr === 'string') arr = arr.split(' ');
 
-    setRawWords(arr);
+const generateWords = () => {
+  let wordsToBeGenerated = 100;
+  if (typingMode.type === typingModes.WORDS_MODE) {
+    wordsToBeGenerated = typingMode.value;
+  }
 
-    const ans = arr.map((word, index) => (
-      <span key={index}>
-        {word.split('').map((letter, letterIndex) => (
-          <span
-            key={letterIndex}
-            className={`${
-              index === 0 && letterIndex === 0 ? 'border-b-white' : ''
-            }`}
-          >
-            {letter}
-          </span>
-        ))}{' '}
-      </span>
-    ));
-    setWords(ans);
+  let arr = generateRandomText(wordsToBeGenerated, typingMode.enableNumbers, typingMode.enablePunctuation);
+  
+  if (typeof arr === 'string') arr = (arr as string).split(' ');
 
-    setCurrIdx(0);
-    setCurrPos(0);
-    setLastTypedCharPosition([]);
-    setTimeLeft(typeof typingMode.value === 'number' ? typingMode.value : 10); // reset timer
-    setIsTyping(false); // stop typing
-    setTotalCharsTyped(0);
-    setUncorrectedErrors(0);
-    setUncorrectedErrorsIndexes([]);
-    setRawWpmOfEachSecond([]);
-    setNetWpmOfEachSecond([]);
-    setAccuracy(0);
-    setTypedChars('');
-    setTypedWords([]);
-  };
+  setRawWords(arr);
+
+  const ans = arr.map((word, index) => (
+    <span key={index}>
+      {word.split('').map((letter, letterIndex) => (
+        <span
+          key={letterIndex}
+          className={`${
+            index === 0 && letterIndex === 0 ? 'border-b-white' : ''
+          }`}
+        >
+          {letter}
+        </span>
+      ))}{' '}
+    </span>
+  ));
+  setWords(ans);
+
+  setCurrIdx(0);
+  setCurrPos(0);
+  setLastTypedCharPosition([]);
+  setTimeLeft(typeof typingMode.value === 'number' ? typingMode.value : 10); // reset timer
+  setIsTyping(false); // stop typing
+  setTotalCharsTyped(0);
+  setUncorrectedErrors(0);
+  setUncorrectedErrorsIndexes([]);
+  setRawWpmOfEachSecond([]);
+  setNetWpmOfEachSecond([]);
+  setAccuracy(0);
+  setTypedChars('');
+  setTypedWords([]);
+};
 
   const handleKeyPress = useCallback(
     (e: KeyboardEvent) => {
@@ -480,6 +483,8 @@ const TextArea = () => {
           mode: {
             type: typingMode.type,
             value: typingMode.value,
+            enableNumbers: typingMode.enableNumbers,
+            enablePunctuation: typingMode.enablePunctuation,
           },
           date: new Date(),
           totalCharacters: totalCharsTyped,

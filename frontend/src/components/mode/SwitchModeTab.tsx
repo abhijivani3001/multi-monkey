@@ -20,50 +20,59 @@ const SwitchModeTab = () => {
             <div className='hidden lg:flex justify-center items-stretch gap-6'>
               {/* difficulty */}
               <div className='flex justify-center items-center gap-6'>
-                <button className='btn2'>
+                {/* Toggle punctuation */}
+                <button
+                  className={`btn2 ${typingMode.enablePunctuation ? 'text-sky-400' : ''}`}
+                  onClick={() => setTypingMode({ 
+                    ...typingMode, 
+                    enablePunctuation: !typingMode.enablePunctuation 
+                  })}
+                >
                   <div>
                     <AtSign className='h-4 w-4' />
                   </div>
-                  <div>punctuation</div>
+                  <div>Punctuation</div>
                 </button>
-                <button className='btn2'>
+
+                {/* Toggle numbers */}
+                <button
+                  className={`btn2 ${typingMode.enableNumbers ? 'text-sky-400' : ''}`}
+                  onClick={() => setTypingMode({ 
+                    ...typingMode, 
+                    enableNumbers: !typingMode.enableNumbers 
+                  })}
+                >
                   <div>
                     <Hash className='h-4 w-4' />
                   </div>
-                  <div>numbers</div>
+                  <div>Numbers</div>
                 </button>
               </div>
+
               <VerticalDivider />
 
               {/* different modes */}
               <div className='flex justify-center items-center gap-6'>
                 <button
-                  className={`btn2 ${
-                    typingMode.type === 'time' ? 'text-sky-400' : ''
-                  }`}
-                  onClick={() => {
-                    setTypingMode({ type: 'time', value: timeModeValues[0] });
-                  }}
+                  className={`btn2 ${typingMode.type === 'time' ? 'text-sky-400' : ''}`}
+                  onClick={() => setTypingMode({ type: 'time', value: timeModeValues[0], enableNumbers: typingMode.enableNumbers, enablePunctuation: typingMode.enablePunctuation })}
                 >
                   <div>
                     <MdAccessTimeFilled />
                   </div>
-                  <div>time</div>
+                  <div>Time</div>
                 </button>
                 <button
-                  className={`btn2 ${
-                    typingMode.type === 'words' ? 'text-sky-400' : ''
-                  }`}
-                  onClick={() => {
-                    setTypingMode({ type: 'words', value: wordsModeValues[0] });
-                  }}
+                  className={`btn2 ${typingMode.type === 'words' ? 'text-sky-400' : ''}`}
+                  onClick={() => setTypingMode({ type: 'words', value: wordsModeValues[0], enableNumbers: typingMode.enableNumbers, enablePunctuation: typingMode.enablePunctuation })}
                 >
                   <div>
                     <RxLetterCaseCapitalize className='h-5 w-5' />
                   </div>
-                  <div>words</div>
+                  <div>Words</div>
                 </button>
               </div>
+
               <VerticalDivider />
 
               {/* numeric values */}
@@ -72,9 +81,7 @@ const SwitchModeTab = () => {
                   timeModeValues.map((item) => (
                     <button
                       key={item}
-                      className={`btn2 ${
-                        item === typingMode.value ? 'text-sky-400' : ''
-                      }`}
+                      className={`btn2 ${item === typingMode.value ? 'text-sky-400' : ''}`}
                       onClick={(e) => {
                         e.currentTarget.blur();
                         setTypingMode({ ...typingMode, value: item });
@@ -87,9 +94,7 @@ const SwitchModeTab = () => {
                   wordsModeValues.map((item) => (
                     <button
                       key={item}
-                      className={`btn2 ${
-                        item === typingMode.value ? 'text-sky-400' : ''
-                      }`}
+                      className={`btn2 ${item === typingMode.value ? 'text-sky-400' : ''}`}
                       onClick={(e) => {
                         e.currentTarget.blur();
                         setTypingMode({ ...typingMode, value: item });
