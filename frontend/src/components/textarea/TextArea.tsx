@@ -64,7 +64,7 @@ const TextArea = () => {
 
   const generateWords = () => {
     let wordsToBeGenerated = 100;
-    if(typingMode.type === typingModes.WORDS_MODE){
+    if (typingMode.type === typingModes.WORDS_MODE) {
       wordsToBeGenerated = typingMode.value;
     }
     let arr = generate(wordsToBeGenerated);
