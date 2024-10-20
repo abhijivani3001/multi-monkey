@@ -4,6 +4,8 @@ import { RxLetterCaseCapitalize } from 'react-icons/rx';
 import { AtSign, Hash } from 'lucide-react';
 import { useTypingModeContext } from '@/context/TypingMode/TypingModeContext';
 import { useIsTypingContext } from '@/context/IsTyping/IsTypingContext';
+import { useEffect } from 'react';
+import toast from 'react-hot-toast';
 
 const SwitchModeTab = () => {
   const { typingMode, setTypingMode } = useTypingModeContext();
@@ -11,6 +13,14 @@ const SwitchModeTab = () => {
 
   const timeModeValues = [15, 30, 60, 120];
   const wordsModeValues = [10, 25, 50, 100];
+
+  async function remove_toast_on_switch() {
+    await toast.dismiss();
+    await toast.remove();
+  }
+  useEffect(() => {
+    remove_toast_on_switch();
+  }, [typingMode]);
 
   return (
     <>
