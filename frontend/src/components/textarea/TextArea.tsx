@@ -64,7 +64,7 @@ const TextArea = () => {
 
   const generateWords = () => {
     let wordsToBeGenerated = 100;
-    if(typingMode.type === typingModes.WORDS_MODE){
+    if (typingMode.type === typingModes.WORDS_MODE) {
       wordsToBeGenerated = typingMode.value;
     }
     let arr = generate(wordsToBeGenerated);
@@ -449,27 +449,27 @@ const TextArea = () => {
 
       let missedChars = 0;
       for (let i = 0; i < currIdx; i++) {
-        missedChars += rawWords[i].length;
-        missedChars -= typedWords[i].length;
+        missedChars += rawWords[i].length - (typedWords[i]?.length || 0); // Ensuring typedWords[i] exists
       }
 
+      // raw wpm calculation
       const rawWpm = Math.round(totalCharsTyped / 5 / minutes);
       setRawWpmOfEachSecond((prev) => [...prev, rawWpm]);
 
+      // net wpm calculation
       const netWpm = Math.max(
         0,
-        Math.round(
-          (totalCharsTyped / 5 - (uncorrectedErrors + missedChars)) / minutes
-        )
+        Math.round((totalCharsTyped - uncorrectedErrors) / 5 / minutes)
       );
       setNetWpmOfEachSecond((prev) => [...prev, netWpm]);
 
+      // accuracy calculation
+      const correctChars = totalCharsTyped - uncorrectedErrors;
+      const totalExpectedChars = totalCharsTyped + missedChars;
       const calculatedAccuracy = Math.round(
-        ((totalCharsTyped - (uncorrectedErrors + missedChars)) /
-          totalCharsTyped) *
-          100
+        (correctChars / (totalExpectedChars || 1)) * 100
       );
-      setAccuracy(calculatedAccuracy);
+      setAccuracy(Math.max(0, calculatedAccuracy));
 
       if (isAuth && user) {
         addScore({
@@ -483,11 +483,11 @@ const TextArea = () => {
           },
           date: new Date(),
           totalCharacters: totalCharsTyped,
-          correctCharacters: totalCharsTyped - uncorrectedErrors - missedChars,
+          correctCharacters: totalCharsTyped - uncorrectedErrors,
           incorrectCharacters: uncorrectedErrors,
           missedCharacters: missedChars,
           isHighScore: false,
-          typedString: typedWords.join(' '),
+          typedString: typedWords.filter(Boolean).join(' '), // remove empty strings and join the words
         });
       } else {
         toast('You need to login to save your score', { icon: 'ℹ️' });
