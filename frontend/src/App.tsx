@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import { getMe } from './api/users/user.api';
 import { useLoadingContext } from './context/Loading/LoadingContext';
 import { IUserResponse } from './interfaces/response/user.response';
+import ForgotPassword from './pages/ForgotPassword.tsx';
 
 function App() {
   const { isAuth, setIsAuth, setUser } = useAuthContext();
@@ -71,6 +72,7 @@ function App() {
           <>
             <Route path='/login' element={<Login />} />
             <Route path='/signup' element={<Signup />} />
+            <Route path='/forgot-password' element={<ForgotPassword />} />
           </>
         )}
         <Route element={<ProtectedRoute />}>
