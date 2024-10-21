@@ -57,7 +57,7 @@ const Login = () => {
 
         setIsAuth(true);
         navigate('/profile', { replace: true });
-        
+
         // clear field values
         reset();
       }
@@ -204,12 +204,12 @@ const Login = () => {
                       </label>
                     </div>
                   </div>
-                  <a
-                    href='#'
+                  <Link
+                    to='/forgot-password'
                     className='text-sm font-medium text-slate-300 hover:underline text-primary-500'
                   >
                     Forgot password?
-                  </a>
+                  </Link>
                 </div>
                 <button
                   type='submit'
