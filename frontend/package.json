@@ -10,13 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.6.0",
+    "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tooltip": "^1.1.0",
     "appwrite": "^15.0.0",
     "axios": "^1.7.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "dotenv": "^16.4.5",
     "lucide-react": "^0.394.0",
     "random-words": "^2.0.1",
     "react": "^18.2.0",
@@ -24,6 +25,7 @@
     "react-hook-form": "^7.52.0",
     "react-hot-toast": "^2.4.1",
     "react-icons": "^5.2.1",
+    "react-password-strength-bar": "^0.4.1",
     "react-router-dom": "^6.23.1",
     "recharts": "^2.12.7",
     "tailwind-merge": "^2.3.0",
