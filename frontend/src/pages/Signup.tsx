@@ -9,6 +9,8 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { z } from 'zod';
+import PasswordStrengthBar from 'react-password-strength-bar';
+import { useState } from 'react';
 
 const schema = z
   .object({
@@ -39,6 +41,7 @@ const schema = z
 type SignupForm = z.infer<typeof schema>;
 
 const Signup = () => {
+  const [password, setPassword] = useState('');
   const {
     register,
     handleSubmit,
@@ -122,7 +125,9 @@ const Signup = () => {
                 type='password'
                 label='Password'
                 placeholder='••••••••'
+                onChange={(e) => setPassword(e.target.value)}
               />
+              <PasswordStrengthBar password={password} />
               <span className={`${errors.password ? 'error-msg' : ''}`}>
                 {errors.password ? errors.password.message : <>&nbsp;</>}
               </span>

@@ -19,7 +19,7 @@ app.use('/hello', (req: Request, res: Response) => {
   });
 });
 
-app.get('/error', (req, res, next) => {
+app.get('/error', (_req, _res, next) => {
   next(new AppError('Something went wrong!', 400));
 });
 
