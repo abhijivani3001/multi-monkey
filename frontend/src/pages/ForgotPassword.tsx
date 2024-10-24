@@ -32,6 +32,7 @@ const ForgotPassword = () => {
 
   // Mock function to simulate sending a recovery email
   const sendRecoveryEmail = async (email: string) => {
+    console.log(email);
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(true);
